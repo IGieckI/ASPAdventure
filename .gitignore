@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+#Robe mie
+Game.xml
+Game.XML
+
 # User-specific files
 *.rsuser
 *.suo
@@ -338,3 +342,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+

@@ -79,6 +79,8 @@
     <Content Include="Register.aspx" />
     <Content Include="Register.css" />
     <Content Include="RegisterOk.aspx" />
+    <Content Include="UserHomePage.aspx" />
+    <Content Include="UserHomePage.css" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +119,13 @@
     </Compile>
     <Compile Include="RegisterOk.aspx.designer.cs">
       <DependentUpon>RegisterOk.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="UserHomePage.aspx.cs">
+      <DependentUpon>UserHomePage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserHomePage.aspx.designer.cs">
+      <DependentUpon>UserHomePage.aspx</DependentUpon>
     </Compile>
     <Compile Include="XMLManager.cs" />
   </ItemGroup>

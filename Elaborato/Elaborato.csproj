@@ -78,6 +78,7 @@
     <Content Include="Recover.css" />
     <Content Include="Register.aspx" />
     <Content Include="Register.css" />
+    <Content Include="RegisterOk.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +110,13 @@
     </Compile>
     <Compile Include="Register.aspx.designer.cs">
       <DependentUpon>Register.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="RegisterOk.aspx.cs">
+      <DependentUpon>RegisterOk.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="RegisterOk.aspx.designer.cs">
+      <DependentUpon>RegisterOk.aspx</DependentUpon>
     </Compile>
     <Compile Include="XMLManager.cs" />
   </ItemGroup>

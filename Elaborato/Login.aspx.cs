@@ -21,9 +21,18 @@ namespace Elaborato
             {
                 string connectionString;
                 SqlConnection cnn;
-                //connectionString = @"Data Source=PC1227;Initial Catalog=Magazzino;User ID=sa;Password=burbero2020";
-                connectionString = $@"Data Source=DESKTOP-CDHTOA2;Initial Catalog = ASPAdventure; Integrated Security=SSPI;";
-                cnn = new SqlConnection(connectionString);
+
+                cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
+                try
+                {
+                    cnn.Open();
+                    cnn.Close();
+                }
+                catch
+                {
+                    cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
+                }
+
                 SqlDataReader OutPutSelectAll;
                 SqlCommand command;
                 String sql;

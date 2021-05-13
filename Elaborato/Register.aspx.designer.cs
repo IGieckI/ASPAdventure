@@ -7,7 +7,7 @@
 // </generato automaticamente>
 //------------------------------------------------------------------------------
 
-namespace AspAdventure
+namespace Elaborato
 {
 
 

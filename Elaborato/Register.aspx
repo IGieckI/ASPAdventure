@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Elaborato.aspx.cs" Inherits="AspAdventure.Register" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Register.aspx.cs" Inherits="Elaborato.Register" %>
 
 <!DOCTYPE html>
 

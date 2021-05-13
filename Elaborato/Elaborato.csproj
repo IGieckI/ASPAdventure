@@ -44,7 +44,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AspAdventureLibrary">
-      <HintPath>..\..\..\source\repos\AspAdventureLibrary\AspAdventureLibrary\bin\Debug\netstandard2.0\AspAdventureLibrary.dll</HintPath>
+      <HintPath>Librerie Esterne\AspAdventureLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Runtime.Serialization" />

@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 using AspAdventureLibrary;
 using System.Drawing;
 using System.Threading;
+using System.Data.SqlClient;
 
 namespace Elaborato
 {
@@ -880,7 +881,7 @@ namespace Elaborato
                         DynamicDialoguesListCopy = DynamicDialoguesList;
                         PersonalShopCopy = PersonalShop;*/
 
-                        Enemy = (EnemyKeyNPC)Game.Map.Zones[Game.Map.PlayerPos].Peoples[i];
+                        Enemy = Database.GetEnemy();
                         Enemy.Stats.HP = Enemy.Stats.MaxHP;
                         Enemy.Stats.Mana = Enemy.Stats.MaxMana;
                         OnFight = true;
@@ -895,12 +896,7 @@ namespace Elaborato
                         imgEnemy.ID = "imgEnemy";
                         imgEnemy.Attributes["runat"] = "server";
                         imgEnemy.Attributes["style"] = $"position:absolute; top: 330px; left: 530px; height:300px; width:auto;";
-                        string base64String = "";
-                        if (Enemy.FightSprite is null)
-                            base64String = Convert.ToBase64String(Enemy.OverWorldSprite, 0, Enemy.OverWorldSprite.Length);
-                        else
-                            base64String = Convert.ToBase64String(Enemy.FightSprite, 0, Enemy.FightSprite.Length);
-                        imgEnemy.ImageUrl = "data:image/gif;base64," + base64String;
+                        imgEnemy.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{Enemy.OverWorldSprite}")));
                         plhEnemy1.Controls.Add(imgEnemy);
                         txtDescription.Text = $"{Enemy.Name}:\nHp:{Enemy.Stats.HP}/{Enemy.Stats.MaxHP}\nMana:{Enemy.Stats.Mana}/{Enemy.Stats.MaxMana}";
                         OnItemDescriptionDisplay = true;
@@ -1258,8 +1254,27 @@ namespace Elaborato
         //Usefull Methods
         private void LoadTest()
         {
-            XMLManager xMLManager = new XMLManager(Server);
-            Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));
+            /*XMLManager xMLManager = new XMLManager(Server);
+            Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));*/
+
+
+            Game.Player = Database.GetPlayer(PlayerID);
+            Game.Items = Database.GetItems(PlayerID);
+            Game.NPCS = Database.GetNPCS(PlayerID);
+            Game.Dialogues = Database.GetDialogues(PlayerID);
+            Game.Map = Database.GetMap(PlayerID);
+
+            //Aggiungo l'inventario al player
+            using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
+            {
+                conn.Open();
+                SqlCommand command = new SqlCommand($"SELECT * FROM Item_Instantiation WHERE Character = {PlayerID};", conn);
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Game.Player.Items.Add(new ItemTuple(Game.Items[int.Parse(reader[5].ToString())], int.Parse(reader[4].ToString())));
+                }
+            }
 
             /*Tests
             Game = new Game(new List<Item>(), new List<NPC>(), null, new Player());
@@ -1787,12 +1802,7 @@ namespace Elaborato
                 imgEnemy.ID = "imgEnemy";
                 imgEnemy.Attributes["runat"] = "server";
                 imgEnemy.Attributes["style"] = $"position:absolute; top: 330px; left: 530px; height:300px; width:auto;";
-                string base64String = "";
-                if (Enemy.FightSprite is null)
-                    base64String = Convert.ToBase64String(Enemy.OverWorldSprite, 0, Enemy.OverWorldSprite.Length);
-                else
-                    base64String = Convert.ToBase64String(Enemy.FightSprite, 0, Enemy.FightSprite.Length);
-                imgEnemy.ImageUrl = "data:image/gif;base64," + base64String;
+                imgEnemy.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{Enemy.OverWorldSprite}")));
                 plhEnemy1.Controls.Add(imgEnemy);
                 if (txtDescription.Text != "Non sei riuscito a scappare!")
                     txtDescription.Text = $"{Enemy.Name}:\nHp:{Enemy.Stats.HP}/{Enemy.Stats.MaxHP}\nMana:{Enemy.Stats.Mana}/{Enemy.Stats.MaxMana}\n\n{FightResult}";
@@ -1818,10 +1828,9 @@ namespace Elaborato
 
                     foreach (NPC npc in Game.Map.Zones[Game.Map.PlayerPos].Peoples)
                     {
-                        string base64 = Convert.ToBase64String(npc.OverWorldSprite, 0, npc.OverWorldSprite.Length);
                         System.Web.UI.WebControls.ImageButton imageButton = new System.Web.UI.WebControls.ImageButton();
                         plhNpcs.Controls.Add(imageButton);
-                        imageButton.ImageUrl = "data:image/gif;base64," + base64;
+                        imageButton.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{npc.OverWorldSprite}")));
                         imageButton.Click += NpcClick;
                         imageButton.ID = npc.Name;
                         imageButton.Attributes["style"] = String.Format("z-index:3; position:inherit; top: {0}px; left: {1}px; height:{2}%; width:auto;", npc.Position.Y * 1.87, npc.Position.X * 2.1, npc.Position.Scale * 16);
@@ -1830,10 +1839,9 @@ namespace Elaborato
 
                     foreach (Item item in Game.Map.Zones[Game.Map.PlayerPos].Items)
                     {
-                        string base64 = Convert.ToBase64String(item.ItemSprite, 0, item.ItemSprite.Length);
                         System.Web.UI.WebControls.ImageButton imageButton = new System.Web.UI.WebControls.ImageButton();
                         plhItems.Controls.Add(imageButton);
-                        imageButton.ImageUrl = "data:image/gif;base64," + base64;
+                        imageButton.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{item.ItemSprite}")));
                         if (item.GetType() == typeof(Portal))
                             imageButton.Click += PortalClick;
                         else if (item.GetType() == typeof(Container))
@@ -1972,8 +1980,7 @@ namespace Elaborato
             }
             else
             {
-                string base64String = Convert.ToBase64String(zone.BackGround, 0, zone.BackGround.Length);
-                ImageBackground.ImageUrl = "data:image/gif;base64," + base64String;
+                ImageBackground.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{zone.BackGround}")));
             }
 
             //Load Minimap Image
@@ -1983,8 +1990,7 @@ namespace Elaborato
             }
             else
             {
-                string base64String = Convert.ToBase64String(zone.Minimap, 0, zone.Minimap.Length);
-                imageMinimap.ImageUrl = "data:image/gif;base64," + base64String;
+                imageMinimap.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{zone.Minimap}")));
             }
 
             //Set up for the Npcs and Items Load
@@ -1998,9 +2004,8 @@ namespace Elaborato
                 foreach (var x in Game.Map.Zones[Game.Map.PlayerPos].Peoples)
                     if (x.Name == ClientID && !(x.DialogueSprite is null))
                     {
-                        string base64String = Convert.ToBase64String(x.OverWorldSprite, 0, x.OverWorldSprite.Length);
                         System.Web.UI.WebControls.Image imgDialogue = new System.Web.UI.WebControls.ImageButton();
-                        imgDialogue.ImageUrl = "data:image/gif;base64," + base64String;
+                        imgDialogue.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{x.OverWorldSprite}")));
                         imgDialogue.ID = x.Name + "Dialogue";
                         imgDialogue.Attributes["style"] = String.Format("z-index:3; position:inherit; top: {0}px; left: {1}px; height:{2}%; width:auto;", x.Position.Y * 1.87, x.Position.X * 2.1, x.Position.Scale * 16);
                         plhDialogueSprite.Controls.Add(imgDialogue);
@@ -2009,9 +2014,8 @@ namespace Elaborato
             }
             else if (OnFight)
             {
-                string base64String = Convert.ToBase64String(Enemy.DialogueSprite, 0, Enemy.DialogueSprite.Length);
                 System.Web.UI.WebControls.Image imgDialogue = new System.Web.UI.WebControls.ImageButton();
-                imgDialogue.ImageUrl = "data:image/gif;base64," + base64String;
+                imgDialogue.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{Enemy.DialogueSprite}")));
                 imgDialogue.ID = Enemy.Name;
                 imgDialogue.Attributes["style"] = String.Format("z-index:3; position:inherit; top: {0}px; left: {1}px; height:{2}%; width:auto;", Enemy.Position.Y * 1.87, Enemy.Position.X * 2.1, Enemy.Position.Scale * 16);
                 plhEnemy1.Controls.Add(imgDialogue);
@@ -2095,10 +2099,9 @@ namespace Elaborato
         }
         private void NewImageButtonNpc(NPC npc)
         {
-            string base64String = Convert.ToBase64String(npc.OverWorldSprite, 0, npc.OverWorldSprite.Length);
             System.Web.UI.WebControls.ImageButton imageButton = new System.Web.UI.WebControls.ImageButton();
             plhNpcs.Controls.Add(imageButton);
-            imageButton.ImageUrl = "data:image/gif;base64," + base64String;
+            imageButton.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{npc.OverWorldSprite}")));
             imageButton.Click += NpcClick;
             imageButton.ID = npc.Name;
             imageButton.Attributes["style"] = String.Format("z-index:3; position:inherit; top: {0}px; left: {1}px; height:{2}%; width:auto;", npc.Position.Y * 1.87, npc.Position.X * 2.1, npc.Position.Scale * 16);
@@ -2106,10 +2109,9 @@ namespace Elaborato
         }
         private void NewImageButtonItem(Item item)
         {
-            string base64String = Convert.ToBase64String(item.ItemSprite, 0, item.ItemSprite.Length);
             System.Web.UI.WebControls.ImageButton imageButton = new System.Web.UI.WebControls.ImageButton();
             plhItems.Controls.Add(imageButton);
-            imageButton.ImageUrl = "data:image/gif;base64," + base64String;
+            imageButton.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{item.ItemSprite}")));
 
             string str = item.GetType().ToString();
 

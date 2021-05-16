@@ -15,6 +15,19 @@ namespace Elaborato
     {
         static string NomePCDB = "DESKTOP-CDHTOA2";
 
+        int PlayerID
+        {
+            get
+            {
+                return (int)Session["PlayerID"];
+            }
+
+            set
+            {
+                Session["PlayerID"] = value;
+            }
+        }
+
         bool FileChosen
         {
             get
@@ -613,9 +626,12 @@ namespace Elaborato
                 Enemy.Stats.HP -= (Game.Player.Stats.Attack);
                 string str;
                 str = $"Hai inflitto {Game.Player.Stats.Attack} danni\n\n";
+
+                Weapon playerWeapon = Database.GetWeapon(Database.Player(ActualID));
+
                 if (!(Game.Player.Weapon is null))
                 {
-                    Enemy.Stats.HP -= Game.Player.Weapon.AttackDamage;
+                    Enemy.Stats.HP -= Database.GetWeapon().AttackDamage;
                     str = $"Hai inflitto {Game.Player.Stats.Attack + Game.Player.Weapon.AttackDamage} danni\n\n";
                 }
                 FightResult += str;
@@ -1411,8 +1427,10 @@ namespace Elaborato
             ImageBackground.ImageUrl = "data:image/bmp;base64," + ImageToBase64(LocalFileToImage(@"C:\Users\utente\Pictures\XD.png"));
             */
         }
-        private void UpdateMap(Zone zone)
+        private void UpdateMap(int idZona)
         {
+            Zone zone = Database.GetZone(idZona);
+
             lstDialogue.Visible = false;
             lstFight.Visible = false;
 

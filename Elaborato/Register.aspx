@@ -11,6 +11,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
+            <div class="wrapper">
                 <div id="formContent">
                     <h2 class="underlineHover"><a  href="Login.aspx">Sign In </a></h2>
                     <h2 class="active"><a  href="#">Sign Up </a></h2>
@@ -25,6 +26,7 @@
                     <br />
                     <asp:Button ID="btnRegister" type="submit" runat="server" Text="Register" OnClick="btnRegister_Click" />
                 </div>
+                </div>                
         </div>
     </form>
 </body>

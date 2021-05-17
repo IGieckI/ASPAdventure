@@ -42,7 +42,7 @@ namespace Elaborato
                     }
                     else if(itemType == 1)
                     {
-                        ItemsBase.Add(new ItemTuple(new Consumable(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new ItemTuple(new Consumables(pk, name, sprite, isKey, sellValue),amount));
                     }
                     else if(itemType == 2)
                     {

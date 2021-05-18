@@ -9,98 +9,114 @@ namespace Elaborato
 {
     public static class Database
     {
-        public static List<ItemTuple> ItemsBase {get;set;}
+        public static List<Item> ItemsBase {get;set;}
         public static List<ItemTuple> Items {get;set;}
         
         public static void UpdateList()
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
-                ItemsBase = new List<ItemTuple>();
-                
+                ItemsBase = new List<Item>();
+                Items = new List<ItemTuple>();
+
                 conn.Open();
                 SqlCommand command = new SqlCommand($"SELECT * FROM Item;", conn);
                 SqlDataReader reader = command.ExecuteReader();
                 while(reader.Read())
                 {
-                    int pk = int.Parse(reader[0].ToString());
+                    int id = int.Parse(reader[0].ToString());
                     string name = reader[1].ToString();
                     string sprite = reader[2].ToString();
                     bool isKey;
-                    int.Parse(reader[3].ToString()) == 0 ? isKey = false; : isKey = true;
+                    isKey = (int.Parse(reader[3].ToString()) == 0) ?  false : true;
                     int sellValue = int.Parse(reader[4].ToString());
                     int itemType = int.Parse(reader[5].ToString());
                     
-                    if(itemType is null)
+                    if(reader[5] is null)
                     {
-                        ItemsBase.Add(new ItemTuple(new Item(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Item(id, name, sprite, isKey, sellValue));
                     }
                     else if(itemType == 0)
                     {
-                        ItemsBase.Add(new ItemTuple(new Portal(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Portal(id, name, sprite, isKey, sellValue));
                         
                     }
                     else if(itemType == 1)
                     {
-                        ItemsBase.Add(new ItemTuple(new Consumables(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue));
                     }
                     else if(itemType == 2)
                     {
-                        ItemsBase.Add(new ItemTuple(new Wearable(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue));
                     }
                     else if(itemType == 3)
                     {
-                        ItemsBase.Add(new ItemTuple(new Spell(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Spell(id, name, sprite, isKey, sellValue));
                     }
                     else if(itemType == 4)
                     {
-                        ItemsBase.Add(new ItemTuple(new Weapon(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue));
                     }
                     else if(itemType == 5)
                     {
-                        ItemsBase.Add(new ItemTuple(new CurrencyItem(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new CurrencyItem(id, name, sprite, isKey, sellValue));
                     }else if(itemType == 6)
                     {
-                        ItemsBase.Add(new ItemTuple(new Container(pk, name, sprite, isKey, sellValue),amount));
+                        ItemsBase.Add(new Container(id, name, sprite, isKey, sellValue));
                     }
                 }
                 reader.Close();
-                
+
                 //Aggiungo i microdati
-                
+
                 //while(read) non for, devi farlo per ogni elemento in instantiation
-                
-                for(int i=0;i<ItemsBase.Count;i++)
+
+                command = new SqlCommand($"SELECT * FROM Item_Instantiation;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
                 {
-                    if(ItemsBase[i].GetType() == typeof(Portal))
+                    for(int i=0;i<ItemsBase.Count;i++)
                     {
-                        command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE ;", conn);   
-                        I
-                    }
-                    else if(ItemsBase[i].GetType() == typeof(Consumables))
-                    {
-                        
-                    }
-                    else if(ItemsBase[i].GetType() == typeof(Wearable))
-                    {
-                        
-                    }
-                    else if(ItemsBase[i].GetType() == typeof(Spell))
-                    {
-                        
-                    }
-                    if(ItemsBase[i].GetType() == typeof(Weapon))
-                    {
-                        
-                    }
-                    if(ItemsBase[i].GetType() == typeof(CurrencyItem))
-                    {
-                        
-                    }
-                    if(ItemsBase[i].GetType() == typeof(Container))
-                    {
-                        
-                    }    
+                        if(ItemsBase[i].ID == int.Parse(reader[1].ToString()))
+                        {
+                            Items.Add(new ItemTuple(ItemsBase[i],int.Parse(reader[4].ToString())));
+                            Items[Items.Count - 1].Item.ID = int.Parse(reader[0].ToString());
+                            Items[Items.Count - 1].Item.Position.X = int.Parse(reader[1].ToString());
+                            Items[Items.Count - 1].Item.Position.Y = int.Parse(reader[2].ToString());
+                            Items[Items.Count - 1].Item.Position.Scale = int.Parse(reader[3].ToString());
+
+                            break;
+                        }
+                    }                    
+                }
+
+                if (ItemsBase[i].GetType() == typeof(Portal))
+                {
+
+                }
+                else if (ItemsBase[i].GetType() == typeof(Consumables))
+                {
+
+                }
+                else if (ItemsBase[i].GetType() == typeof(Wearable))
+                {
+
+                }
+                else if (ItemsBase[i].GetType() == typeof(Spell))
+                {
+
+                }
+                if (ItemsBase[i].GetType() == typeof(Weapon))
+                {
+
+                }
+                if (ItemsBase[i].GetType() == typeof(CurrencyItem))
+                {
+
+                }
+                if (ItemsBase[i].GetType() == typeof(Container))
+                {
+
                 }
                 reader.Close();
             }

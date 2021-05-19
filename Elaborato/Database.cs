@@ -100,10 +100,21 @@ namespace Elaborato
                 reader.Close();
 
                 //Inserisco gli item giusti nelle sentences
-                for (int i = 0; i < ItemsBase.Count(); i++)
+                command = new SqlCommand($"SELECT * FROM ItemInSentence;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
                 {
+                    for (int i = 0; i < Sentences.Count(); i++)
+                    {
+                        if(Sentences[i].ID == int.Parse(reader[0].ToString()))
+                        {
 
+                            break;
+                        }
+                    }
                 }
+                reader.Close();
+
 
                 command = new SqlCommand($"SELECT * FROM NPC;", conn);
                 reader = command.ExecuteReader();

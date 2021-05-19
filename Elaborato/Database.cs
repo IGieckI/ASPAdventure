@@ -9,67 +9,145 @@ namespace Elaborato
 {
     public static class Database
     {
-        public static List<Item> ItemsBase {get;set;}
-        public static List<ItemTuple> Items {get;set;}
-        
+        public static List<Item> ItemsBase { get; set; }
+        public static List<Item> Items { get; set; }
+
+        public static List<NPC> NPCBase { get; set; }
+        public static List<NPC> NPC { get; set; }
+
+        public static List<Dialogue> Dialogues { get; set; }
+        public static List<Sentence> Sentences { get; set; }
+
         public static void UpdateList()
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
                 ItemsBase = new List<Item>();
-                Items = new List<ItemTuple>();
+                Items = new List<Item>();
+                NPCBase = new List<NPC>();
+                NPC = new List<NPC>();
 
                 conn.Open();
+
+                //Scarico tutti gli items
                 SqlCommand command = new SqlCommand($"SELECT * FROM Item;", conn);
                 SqlDataReader reader = command.ExecuteReader();
-                while(reader.Read())
+                while (reader.Read())
                 {
                     int id = int.Parse(reader[0].ToString());
                     string name = reader[1].ToString();
                     string sprite = reader[2].ToString();
                     bool isKey;
-                    isKey = (int.Parse(reader[3].ToString()) == 0) ?  false : true;
+                    isKey = (int.Parse(reader[3].ToString()) == 0) ? false : true;
                     int sellValue = int.Parse(reader[4].ToString());
                     int itemType = int.Parse(reader[5].ToString());
-                    
-                    if(reader[5] is null)
+
+                    if (reader[5] is null)
                     {
                         ItemsBase.Add(new Item(id, name, sprite, isKey, sellValue));
                     }
-                    else if(itemType == 0)
+                    else if (itemType == 0)
                     {
                         ItemsBase.Add(new Portal(id, name, sprite, isKey, sellValue));
-                        
+
                     }
-                    else if(itemType == 1)
+                    else if (itemType == 1)
                     {
                         ItemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue));
                     }
-                    else if(itemType == 2)
+                    else if (itemType == 2)
                     {
                         ItemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue));
                     }
-                    else if(itemType == 3)
+                    else if (itemType == 3)
                     {
                         ItemsBase.Add(new Spell(id, name, sprite, isKey, sellValue));
                     }
-                    else if(itemType == 4)
+                    else if (itemType == 4)
                     {
                         ItemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue));
                     }
-                    else if(itemType == 5)
+                    else if (itemType == 5)
                     {
                         ItemsBase.Add(new CurrencyItem(id, name, sprite, isKey, sellValue));
-                    }else if(itemType == 6)
+                    }
+                    else if (itemType == 6)
                     {
                         ItemsBase.Add(new Container(id, name, sprite, isKey, sellValue));
                     }
                 }
                 reader.Close();
 
-                //Aggiungo i microdati
+                //Aggiungo i dialoghi
+                command = new SqlCommand($"SELECT * FROM Dialogue;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    Dialogues.Add(new Dialogue(int.Parse(reader[0].ToString()), int.Parse(reader[0].ToString())));
+                }
+                reader.Close();
 
-                //while(read) non for, devi farlo per ogni elemento in instantiation
+                //Scarico le sentences
+                command = new SqlCommand($"SELECT * FROM Sentence;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < Dialogues.Count(); i++)
+                    {
+                        Sentences.Add(new Sentence(int.Parse(reader[0].ToString()), int.Parse(reader[1].ToString()), reader[2].ToString()));
+                    }
+                }
+                reader.Close();
+
+                //Inserisco gli item giusti nelle sentences
+                for (int i = 0; i < ItemsBase.Count(); i++)
+                {
+
+                }
+
+                command = new SqlCommand($"SELECT * FROM NPC;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if(reader[4] is null)
+                    {
+                        NPCBase.Add(new NPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                    }
+                    else if(int.Parse(reader[4].ToString()) == 0)
+                    {
+                        NPCBase.Add(new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                    }
+                    else if (int.Parse(reader[4].ToString()) == 0)
+                    {
+                        NPCBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                    }
+                }
+                reader.Close();
+
+
+                command = new SqlCommand($"SELECT * FROM NPC_Instantiation;", conn);
+                reader = command.ExecuteReader();
+                while(reader.Read())
+                {
+                    for (int i = 0; i < NPCBase.Count(); i++)
+                    {
+                        if(NPCBase[i].ID==int.Parse(reader[1].ToString()))
+                        {
+                            NPC.Add(NPCBase[i]);
+                            NPC[NPC.Count() - 1].ID = int.Parse(reader[1].ToString());
+                            NPC[NPC.Count() - 1].Position.X = int.Parse(reader[2].ToString());
+                            NPC[NPC.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
+                            NPC[NPC.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
+                            
+                            //Aggiungi dialogues
+
+                            break;
+                        }
+                    }
+                }
+                reader.Close();
+
+                //Aggiungo i microdati
 
                 command = new SqlCommand($"SELECT * FROM Item_Instantiation;", conn);
                 reader = command.ExecuteReader();
@@ -79,12 +157,12 @@ namespace Elaborato
                     {
                         if(ItemsBase[i].ID == int.Parse(reader[1].ToString()))
                         {
+                            Items.Add(GetIDItem(int.Parse(reader[5].ToString())));
                             Items.Add(new ItemTuple(ItemsBase[i],int.Parse(reader[4].ToString())));
-                            Items[Items.Count - 1].Item.ID = int.Parse(reader[0].ToString());
-                            Items[Items.Count - 1].Item.Position.X = int.Parse(reader[1].ToString());
-                            Items[Items.Count - 1].Item.Position.Y = int.Parse(reader[2].ToString());
-                            Items[Items.Count - 1].Item.Position.Scale = int.Parse(reader[3].ToString());
-
+                            Items[Items.Count - 1].ID = int.Parse(reader[0].ToString());
+                            Items[Items.Count - 1].Position.X = int.Parse(reader[1].ToString());
+                            Items[Items.Count - 1].Position.Y = int.Parse(reader[2].ToString());
+                            Items[Items.Count - 1].Position.Scale = int.Parse(reader[3].ToString());
                             break;
                         }
                     }                    
@@ -121,7 +199,23 @@ namespace Elaborato
                 reader.Close();
             }
          }
-        
+
+        static Item GetIDItem(int ID)
+        {
+            foreach(Item i in ItemsBase)
+                if (i.ID == ID)
+                    return i;
+            return null;
+        }
+
+        static Item GetIDNPC(int ID)
+        {
+            foreach (Item i in NPCBase)
+                if (i.ID == ID)
+                    return i;
+            return null;
+        }
+
         public static Player GetPlayer(int id)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))

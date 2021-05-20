@@ -1,32 +1,28 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AspAdventureLibrary;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace Elaborato
 {
     public static class Database
     {
-        public static List<Item> ItemsBase { get; set; }
-        public static List<Item> Items { get; set; }
-
-        public static List<NPC> NPCBase { get; set; }
-        public static List<NPC> NPC { get; set; }
-
-        public static List<Dialogue> Dialogues { get; set; }
-        public static List<Sentence> Sentences { get; set; }
-
-        public static void UpdateList()
+        public static Game Get(int PlayerID)
         {
+            List<Item> itemsBase = new List<Item>();
+            List<Item> items = new List<Item>();
+            List<NPC> npcBase = new List<NPC>();
+            List<NPC> npc = new List<NPC>();
+            List<Dialogue> dialogues = new List<Dialogue>();
+            List<Sentence> sentences = new List<Sentence>();
+            Map map;
+            List<Zone> zones = new List<Zone>();
+
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
-                ItemsBase = new List<Item>();
-                Items = new List<Item>();
-                NPCBase = new List<NPC>();
-                NPC = new List<NPC>();
-
                 conn.Open();
 
                 //Scarico tutti gli items
@@ -44,36 +40,36 @@ namespace Elaborato
 
                     if (reader[5] is null)
                     {
-                        ItemsBase.Add(new Item(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Item(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 0)
                     {
-                        ItemsBase.Add(new Portal(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Portal(id, name, sprite, isKey, sellValue));
 
                     }
                     else if (itemType == 1)
                     {
-                        ItemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 2)
                     {
-                        ItemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 3)
                     {
-                        ItemsBase.Add(new Spell(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Spell(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 4)
                     {
-                        ItemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 5)
                     {
-                        ItemsBase.Add(new CurrencyItem(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new CurrencyItem(id, name, sprite, isKey, sellValue));
                     }
                     else if (itemType == 6)
                     {
-                        ItemsBase.Add(new Container(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Container(id, name, sprite, isKey, sellValue));
                     }
                 }
                 reader.Close();
@@ -83,7 +79,7 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Dialogues.Add(new Dialogue(int.Parse(reader[0].ToString()), int.Parse(reader[0].ToString())));
+                    dialogues.Add(new Dialogue(int.Parse(reader[0].ToString()), int.Parse(reader[0].ToString())));
                 }
                 reader.Close();
 
@@ -92,9 +88,9 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    for (int i = 0; i < Dialogues.Count(); i++)
+                    for (int i = 0; i < dialogues.Count(); i++)
                     {
-                        Sentences.Add(new Sentence(int.Parse(reader[0].ToString()), int.Parse(reader[1].ToString()), reader[2].ToString()));
+                        sentences.Add(new Sentence(int.Parse(reader[0].ToString()), int.Parse(reader[1].ToString()), reader[2].ToString()));
                     }
                 }
                 reader.Close();
@@ -104,106 +100,102 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    for (int i = 0; i < Sentences.Count(); i++)
-                    {
-                        if(Sentences[i].ID == int.Parse(reader[0].ToString()))
-                        {
-
-                            break;
-                        }
-                    }
+                    sentences.Find(a => a.ID == int.Parse(reader[0].ToString())).ItemGive.Add(new ItemTuple(itemsBase.Find(b => b.ID == int.Parse(reader[1].ToString())),(int)reader[2]));
                 }
                 reader.Close();
 
+                //Scarico e inserisco le answers
+                command = new SqlCommand($"SELECT * FROM Answer;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    sentences.Find(a => a.ID == (int)reader[3]).Answers.Add(new KeyValuePair<int, string>((int)reader[2],reader[1].ToString()));
+                }
+                reader.Close();
 
-                command = new SqlCommand($"SELECT * FROM NPC;", conn);
+                //Inserisco le sentences nei dialogues
+                for (int i =0;i<sentences.Count();i++)
+                {
+                    dialogues.Find(a => a.DialogueID == sentences[i].DialogueID).Spiching.Add(sentences[i]);
+                }
+
+                //Scarico Map
+                command = new SqlCommand($"SELECT * FROM Map WHERE ID = {PlayerID};", conn);
+                reader = command.ExecuteReader();
+                reader.Read();
+                map = new Map(reader[1].ToString());
+                reader.Close();
+
+                //Scarico le zone e le inserisco in map
+                command = new SqlCommand($"SELECT * FROM Zone WHERE ID = {PlayerID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Add(new Zone((int)reader[0],reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
+                }
+                reader.Close();
+
+                //Scarico gli npcs
+                command = new SqlCommand($"SELECT * FROM npc;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     if(reader[4] is null)
                     {
-                        NPCBase.Add(new NPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                        npcBase.Add(new NPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
                     }
                     else if(int.Parse(reader[4].ToString()) == 0)
                     {
-                        NPCBase.Add(new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                        npcBase.Add(new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
                     }
-                    else if (int.Parse(reader[4].ToString()) == 0)
+                    else if(int.Parse(reader[4].ToString()) == 0)
                     {
-                        NPCBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                        npcBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
                     }
                 }
                 reader.Close();
 
-
-                command = new SqlCommand($"SELECT * FROM NPC_Instantiation;", conn);
+                //Scarico i dati specifici degli npc locali
+                command = new SqlCommand($"SELECT * FROM npc_Instantiation;", conn);
                 reader = command.ExecuteReader();
                 while(reader.Read())
                 {
-                    for (int i = 0; i < NPCBase.Count(); i++)
-                    {
-                        if(NPCBase[i].ID==int.Parse(reader[1].ToString()))
-                        {
-                            NPC.Add(NPCBase[i]);
-                            NPC[NPC.Count() - 1].ID = int.Parse(reader[1].ToString());
-                            NPC[NPC.Count() - 1].Position.X = int.Parse(reader[2].ToString());
-                            NPC[NPC.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
-                            NPC[NPC.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
-                            
-                            //Aggiungi dialogues
-
-                            break;
-                        }
-                    }
+                    map.Zones[(int)reader[6]].Peoples.Add(npcBase.Find(a=>a.ID==(int)reader[1]));
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].AlreadySpoken = (int)reader[5] == 0 ? false : true;
+                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Dialogue = dialogues.Find(a => a.DialogueID == map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].DialogueID);
                 }
                 reader.Close();
 
-                //Aggiungo i microdati
-
-                command = new SqlCommand($"SELECT * FROM Item_Instantiation;", conn);
-                reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    for(int i=0;i<ItemsBase.Count;i++)
-                    {
-                        if(ItemsBase[i].ID == int.Parse(reader[1].ToString()))
-                        {
-                            Items.Add(GetIDItem(int.Parse(reader[5].ToString())));
-                            Items.Add(new ItemTuple(ItemsBase[i],int.Parse(reader[4].ToString())));
-                            Items[Items.Count - 1].ID = int.Parse(reader[0].ToString());
-                            Items[Items.Count - 1].Position.X = int.Parse(reader[1].ToString());
-                            Items[Items.Count - 1].Position.Y = int.Parse(reader[2].ToString());
-                            Items[Items.Count - 1].Position.Scale = int.Parse(reader[3].ToString());
-                            break;
-                        }
-                    }                    
-                }
-
-                if (ItemsBase[i].GetType() == typeof(Portal))
+                
+                if (itemsBase[i].GetType() == typeof(Portal))
                 {
 
                 }
-                else if (ItemsBase[i].GetType() == typeof(Consumables))
+                else if (itemsBase[i].GetType() == typeof(Consumables))
                 {
 
                 }
-                else if (ItemsBase[i].GetType() == typeof(Wearable))
+                else if (itemsBase[i].GetType() == typeof(Wearable))
                 {
 
                 }
-                else if (ItemsBase[i].GetType() == typeof(Spell))
+                else if (itemsBase[i].GetType() == typeof(Spell))
                 {
 
                 }
-                if (ItemsBase[i].GetType() == typeof(Weapon))
+                if (itemsBase[i].GetType() == typeof(Weapon))
                 {
 
                 }
-                if (ItemsBase[i].GetType() == typeof(CurrencyItem))
+                if (itemsBase[i].GetType() == typeof(CurrencyItem))
                 {
 
                 }
-                if (ItemsBase[i].GetType() == typeof(Container))
+                if (itemsBase[i].GetType() == typeof(Container))
                 {
 
                 }
@@ -213,15 +205,15 @@ namespace Elaborato
 
         static Item GetIDItem(int ID)
         {
-            foreach(Item i in ItemsBase)
+            foreach(Item i in itemsBase)
                 if (i.ID == ID)
                     return i;
             return null;
         }
 
-        static Item GetIDNPC(int ID)
+        static Item GetIDnpc(int ID)
         {
-            foreach (Item i in NPCBase)
+            foreach (Item i in npcBase)
                 if (i.ID == ID)
                     return i;
             return null;
@@ -284,23 +276,23 @@ namespace Elaborato
             }
         }
 
-        public static List<NPC> GetNPCS(int id)
+        public static List<npc> GetnpcS(int id)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
                 conn.Open();
                 SqlCommand command = new SqlCommand($"SELECT * FROM Player WHERE ID = {id};", conn);
                 SqlDataReader reader = command.ExecuteReader();
-                List<NPC> npcs = new List<NPC>();
+                List<npc> npcs = new List<npc>();
                 while(reader.Read())
                 {
-                    npcs.Add(new NPC(reader[]));
+                    npcs.Add(new npc(reader[]));
                 }
                 return (new Player(int.Parse(reader[0].ToString()), reader[2].ToString(), int.Parse(reader[3].ToString()), int.Parse(reader[4].ToString()), int.Parse(reader[5].ToString()), int.Parse(reader[6].ToString()), int.Parse(reader[7].ToString()), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
             }
         }
 
-        public static List<Item> GetZoneItems(int id)
+        public static List<Item> GetZoneitems(int id)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
@@ -350,7 +342,7 @@ namespace Elaborato
             }
         }
 
-        public static List<Dialogue> GetDialogues(int id)
+        public static List<Dialogue> Getdialogues(int id)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {

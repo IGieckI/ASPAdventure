@@ -10,9 +10,8 @@ namespace Elaborato
 {
     public static class Database
     {
-        public static Game Get(int PlayerID)
+        public static Game Load(int username, int characterID)
         {
-            Game game;
             List<Item> itemsBase = new List<Item>();
             List<Item> items = new List<Item>();
             List<NPC> npcBase = new List<NPC>();
@@ -21,6 +20,7 @@ namespace Elaborato
             List<Sentence> sentences = new List<Sentence>();
             Map map;
             List<Zone> zones = new List<Zone>();
+            Player player;
 
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
@@ -121,14 +121,14 @@ namespace Elaborato
                 }
 
                 //Scarico Map
-                command = new SqlCommand($"SELECT * FROM Map WHERE ID = {PlayerID};", conn);
+                command = new SqlCommand($"SELECT * FROM Map WHERE ID = {characterID};", conn);
                 reader = command.ExecuteReader();
                 reader.Read();
                 map = new Map(reader[1].ToString());
                 reader.Close();
 
                 //Scarico le zone e le inserisco in map
-                command = new SqlCommand($"SELECT * FROM Zone WHERE ID = {PlayerID};", conn);
+                command = new SqlCommand($"SELECT * FROM Zone WHERE ID = {characterID};", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -173,7 +173,14 @@ namespace Elaborato
                 }
                 reader.Close();
 
-                return null;
+                //Create the player
+                command = new SqlCommand($"SELECT * FROM Player WHERE Username = {username} AND ID = {characterID};", conn);
+                reader = command.ExecuteReader();
+                reader.Read();
+                player = new Player(int.Parse(reader[0].ToString()), reader[2].ToString(), (Wearable)itemsBase.Find(a=>a.ID== int.Parse(reader[3].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[6].ToString())), (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
+                reader.Close();
+
+                return new Game(itemsBase, npcBase, map, player);
 
                 /*if (itemsBase[i].GetType() == typeof(Portal))
                 {
@@ -205,6 +212,10 @@ namespace Elaborato
                 }
                 reader.Close();*/
             }
+        }
+        public static void Save(int username, int characterID)
+        {
+
         }
 
         //static Item GetIDItem(int ID)

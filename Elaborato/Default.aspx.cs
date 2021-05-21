@@ -14,18 +14,30 @@ namespace Elaborato
 {
     public partial class Default : System.Web.UI.Page
     {
-        static string NomePCDB = "DESKTOP-CDHTOA2";
 
-        int PlayerID
+        int username
         {
             get
             {
-                return (int)Session["PlayerID"];
+                return (int)Session["username"];
             }
 
             set
             {
-                Session["PlayerID"] = value;
+                Session["username"] = value;
+            }
+        }
+
+        int CharacterID
+        {
+            get
+            {
+                return (int)Session["characterID"];
+            }
+
+            set
+            {
+                Session["characterID"] = value;
             }
         }
 
@@ -1254,7 +1266,7 @@ namespace Elaborato
             /*XMLManager xMLManager = new XMLManager(Server);
             Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));*/
 
-            Game = Database.Get(PlayerID);
+            Game = Database.Load(username, CharacterID);
 
             
             /*Tests

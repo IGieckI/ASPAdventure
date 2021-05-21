@@ -79,7 +79,7 @@ namespace Elaborato
 
         protected void grdCharacters_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
         {
-            Session["playerID"] = Characters[e.NewSelectedIndex].ID;
+            Session["characterID"] = Characters[e.NewSelectedIndex].ID;
             Response.Redirect("~/Default.aspx");
         }
     }

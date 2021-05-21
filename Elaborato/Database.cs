@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using AspAdventureLibrary;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace Elaborato
 {
@@ -75,6 +74,41 @@ namespace Elaborato
                 }
                 reader.Close();
 
+                //Imposto le proprietà nei consumables
+                command = new SqlCommand($"SELECT * FROM Consumables;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Consumables)itemsBase.Find(a => a.ID == (int)reader[0])).Heal = (int)reader[1];
+                    ((Consumables)itemsBase.Find(a => a.ID == (int)reader[0])).Mana = (int)reader[2];
+                }
+                reader.Close();
+
+                //Imposto le proprietà nei Container
+                command = new SqlCommand($"SELECT * FROM Container;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).RemoveAfeterUnlock = (bool)reader[1];
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM ContainerGive;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemDrop.Add(new ItemTuple(itemsBase.Find(b=>b.ID==(int)reader[1]),(int)reader[2]));
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM ContainerRequirement;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                }
+                reader.Close();
+
                 //Aggiungo i dialoghi
                 command = new SqlCommand($"SELECT * FROM Dialogue;", conn);
                 reader = command.ExecuteReader();
@@ -106,7 +140,7 @@ namespace Elaborato
                 reader.Close();
 
                 //Scarico e inserisco le answers
-                command = new SqlCommand($"SELECT * FROM Answer;", conn);
+                command = new SqlCommand($"SELECT * FROM Answer WHERE ;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -156,8 +190,26 @@ namespace Elaborato
                 }
                 reader.Close();
 
+                //Inserisco i dati nei dealer
+                command = new SqlCommand($"SELECT * FROM DealerInventory;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Dealer)npcBase.Find(a => a.ID == (int)reader[0])).Shop.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                }
+                reader.Close();
+
+                //Imposto i dati degli enemy
+                command = new SqlCommand($"SELECT * FROM Enemy;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    (EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0]) = new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[2].ToString(), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[6].ToString())), (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
+                }
+                reader.Close();
+
                 //Scarico i dati specifici degli npc locali e li aggiungo alla mappa
-                command = new SqlCommand($"SELECT * FROM npc_Instantiation;", conn);
+                command = new SqlCommand($"SELECT * FROM NpcInstantiation;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -180,37 +232,11 @@ namespace Elaborato
                 player = new Player(int.Parse(reader[0].ToString()), reader[2].ToString(), (Wearable)itemsBase.Find(a=>a.ID== int.Parse(reader[3].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[6].ToString())), (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
                 reader.Close();
 
+
+                //GESTISCI LE INSTANCES
+
+
                 return new Game(itemsBase, npcBase, map, player);
-
-                /*if (itemsBase[i].GetType() == typeof(Portal))
-                {
-
-                }
-                else if (itemsBase[i].GetType() == typeof(Consumables))
-                {
-
-                }
-                else if (itemsBase[i].GetType() == typeof(Wearable))
-                {
-
-                }
-                else if (itemsBase[i].GetType() == typeof(Spell))
-                {
-
-                }
-                if (itemsBase[i].GetType() == typeof(Weapon))
-                {
-
-                }
-                if (itemsBase[i].GetType() == typeof(CurrencyItem))
-                {
-
-                }
-                if (itemsBase[i].GetType() == typeof(Container))
-                {
-
-                }
-                reader.Close();*/
             }
         }
         public static void Save(int username, int characterID)

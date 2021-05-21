@@ -37,7 +37,7 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
+                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString()));
                 }
                 reader.Close();
 
@@ -91,11 +91,17 @@ namespace Elaborato
                 reader.Close();
 
                 //Scarico le istanze che utilizzerà
-                command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE ID = {characterID};", conn);
+                command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE Character = {characterID};", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
+                    items.Add(itemsBase.Find(a=>a.ID==(int)reader[5]));
+                    items[items.Count() - 1].Position.X = (int)reader[1];
+                    items[items.Count() - 1].Position.Y = (int)reader[2];
+                    items[items.Count() - 1].Position.Scale = (int)reader[3];
+                    items[items.Count() - 1].Player = (int)reader[6];
+                    items[items.Count() - 1].Enemy = (int)reader[7];
+                    items[items.Count() - 1]. = (int)reader[1];
                 }
                 reader.Close();
 

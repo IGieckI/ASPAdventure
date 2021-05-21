@@ -25,9 +25,25 @@ namespace Elaborato
             {
                 conn.Open();
 
-                //Scarico tutti gli items
-                SqlCommand command = new SqlCommand($"SELECT * FROM Item;", conn);
+                //Scarico Map
+                SqlCommand command = new SqlCommand($"SELECT * FROM Map WHERE ID = {characterID};", conn);
                 SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                map = new Map(reader[1].ToString());
+                reader.Close();
+
+                //Scarico le zone e le inserisco in map
+                command = new SqlCommand($"SELECT * FROM Zone WHERE ID = {characterID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
+                }
+                reader.Close();
+
+                //Scarico tutti gli items
+                command = new SqlCommand($"SELECT * FROM Item;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     int id = int.Parse(reader[0].ToString());
@@ -74,6 +90,15 @@ namespace Elaborato
                 }
                 reader.Close();
 
+                //Scarico le istanze che utilizzerà
+                command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE ID = {characterID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
+                }
+                reader.Close();
+
                 //Imposto le proprietà nei consumables
                 command = new SqlCommand($"SELECT * FROM Consumables;", conn);
                 reader = command.ExecuteReader();
@@ -106,6 +131,74 @@ namespace Elaborato
                 while (reader.Read())
                 {
                     ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                }
+                reader.Close();
+
+                //Imposto le proprietà di Spell
+                command = new SqlCommand($"SELECT * FROM Spell;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Spell)itemsBase.Find(a => a.ID == (int)reader[0])).Healing = (int)reader[1];
+                    ((Spell)itemsBase.Find(a => a.ID == (int)reader[0])).MagicPower = (int)reader[2];
+                    ((Spell)itemsBase.Find(a => a.ID == (int)reader[0])).ManaCost = (int)reader[3];
+                }
+                reader.Close();
+
+                //Imposto le proprietà nei Portal
+                command = new SqlCommand($"SELECT * FROM Portal;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).RemoveAfetrEntrance = (int)reader[1] == 1 ? true : false;
+                    ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ZonePointer = (int)reader[2];
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM PortalRequest;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                }
+                reader.Close();
+
+                //Imposto le proprietà nei Weapon
+                command = new SqlCommand($"SELECT * FROM Weapon;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Weapon)itemsBase.Find(a => a.ID == (int)reader[0])).AttackDamage = (int)reader[1];
+                    ((Weapon)itemsBase.Find(a => a.ID == (int)reader[0])).Crit = (int)reader[2];
+                    ((Weapon)itemsBase.Find(a => a.ID == (int)reader[0])).MagicPower = (int)reader[3];
+                    ((Weapon)itemsBase.Find(a => a.ID == (int)reader[0])).Weight = (int)reader[4];
+                }
+                reader.Close();
+
+                //Imposto le proprietà nei Wearable
+                command = new SqlCommand($"SELECT * FROM Weapon;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Armor = (int)reader[1];
+                    ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).MagicResist = (int)reader[2];
+                    ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).ManaRegen = (int)reader[3];
+                    ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Weight = (int)reader[4];
+                    switch ((int)reader[5])
+                    {
+                        case 0:
+                            ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Parts = Wearable.Part.Helmet;
+                            break;
+                        case 1:
+                            ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Parts = Wearable.Part.Chestplate;
+                            break;
+                        case 2:
+                            ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Parts = Wearable.Part.Leggins;
+                            break;
+                        case 3:
+                            ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Parts = Wearable.Part.Boots;
+                            break;
+                    }
                 }
                 reader.Close();
 
@@ -154,24 +247,8 @@ namespace Elaborato
                     dialogues.Find(a => a.DialogueID == sentences[i].DialogueID).Spiching.Add(sentences[i]);
                 }
 
-                //Scarico Map
-                command = new SqlCommand($"SELECT * FROM Map WHERE ID = {characterID};", conn);
-                reader = command.ExecuteReader();
-                reader.Read();
-                map = new Map(reader[1].ToString());
-                reader.Close();
-
-                //Scarico le zone e le inserisco in map
-                command = new SqlCommand($"SELECT * FROM Zone WHERE ID = {characterID};", conn);
-                reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    map.Zones.Add(new Zone((int)reader[0], reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), (int)reader[4], (int)reader[5], (int)reader[6], (int)reader[7], reader[8].ToString())); ;
-                }
-                reader.Close();
-
                 //Scarico gli npcs
-                command = new SqlCommand($"SELECT * FROM npc;", conn);
+                command = new SqlCommand($"SELECT * FROM NPC;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -204,7 +281,39 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    (EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0]) = new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[2].ToString(), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[6].ToString())), (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Helmet = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[1].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Chestplate = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[2].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Leggins = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Boots = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Weapon = (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString()));
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Experience = (int)reader[6];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).EscapePerc = (int)reader[7];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Money = (int)reader[8];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.HP = (int)reader[9];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.MaxHP = (int)reader[10];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.Mana = (int)reader[11];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.MaxMana = (int)reader[12];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.Attack = (int)reader[13];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.AttackSpeed = (int)reader[14];
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Stats.Elusiveness = (int)reader[15];
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM EnemyDrop;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Drop is null)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Drop = new Drop();
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Drop.Items.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM EnemySpells;", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Spells.Add((Spell)itemsBase.Find(b=>b.ID==(int)reader[1]));
                 }
                 reader.Close();
 
@@ -244,6 +353,7 @@ namespace Elaborato
 
         }
 
+        #region Codice Vecchio
         //static Item GetIDItem(int ID)
         //{
         //    foreach (Item i in itemsBase)
@@ -416,5 +526,6 @@ namespace Elaborato
         //        return map;
         //    }
         //}
+        #endregion
     }
 }

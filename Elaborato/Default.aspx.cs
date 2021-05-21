@@ -627,12 +627,9 @@ namespace Elaborato
                 Enemy.Stats.HP -= (Game.Player.Stats.Attack);
                 string str;
                 str = $"Hai inflitto {Game.Player.Stats.Attack} danni\n\n";
-
-                Weapon playerWeapon = Database.GetWeapon(Database.Player(ActualID));
-
                 if (!(Game.Player.Weapon is null))
                 {
-                    Enemy.Stats.HP -= Database.GetWeapon().AttackDamage;
+                    Enemy.Stats.HP -= Game.Player.Weapon.AttackDamage;
                     str = $"Hai inflitto {Game.Player.Stats.Attack + Game.Player.Weapon.AttackDamage} danni\n\n";
                 }
                 FightResult += str;
@@ -881,7 +878,7 @@ namespace Elaborato
                         DynamicDialoguesListCopy = DynamicDialoguesList;
                         PersonalShopCopy = PersonalShop;*/
 
-                        Enemy = Database.GetEnemy();
+                        Enemy = (EnemyKeyNPC)Game.Map.Zones[Game.Map.PlayerPos].Peoples[i];
                         Enemy.Stats.HP = Enemy.Stats.MaxHP;
                         Enemy.Stats.Mana = Enemy.Stats.MaxMana;
                         OnFight = true;
@@ -1257,25 +1254,9 @@ namespace Elaborato
             /*XMLManager xMLManager = new XMLManager(Server);
             Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));*/
 
+            Game = Database.Get(PlayerID);
 
-            Game.Player = Database.GetPlayer(PlayerID);
-            Game.Items = Database.GetItems(PlayerID);
-            Game.NPCS = Database.GetNPCS(PlayerID);
-            Game.Dialogues = Database.GetDialogues(PlayerID);
-            Game.Map = Database.GetMap(PlayerID);
-
-            //Aggiungo l'inventario al player
-            using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
-            {
-                conn.Open();
-                SqlCommand command = new SqlCommand($"SELECT * FROM Item_Instantiation WHERE Character = {PlayerID};", conn);
-                SqlDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    Game.Player.Items.Add(new ItemTuple(Game.Items[int.Parse(reader[5].ToString())], int.Parse(reader[4].ToString())));
-                }
-            }
-
+            
             /*Tests
             Game = new Game(new List<Item>(), new List<NPC>(), null, new Player());
             Game.Player.Money = 100;
@@ -1442,10 +1423,8 @@ namespace Elaborato
             ImageBackground.ImageUrl = "data:image/bmp;base64," + ImageToBase64(LocalFileToImage(@"C:\Users\utente\Pictures\XD.png"));
             */
         }
-        private void UpdateMap(int idZona)
+        private void UpdateMap(Zone zone)
         {
-            Zone zone = Database.GetZone(idZona);
-
             lstDialogue.Visible = false;
             lstFight.Visible = false;
 

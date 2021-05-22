@@ -7,20 +7,19 @@ using System.Data.SqlClient;
 
 namespace Elaborato
 {
-    public static class Database
+    public class Database
     {
-        public static Game Load(int username, int characterID)
+        List<Item> itemsBase = new List<Item>();
+        List<Item> items = new List<Item>();
+        List<NPC> npcBase = new List<NPC>();
+        List<NPC> npc = new List<NPC>();
+        List<Dialogue> dialogues = new List<Dialogue>();
+        List<Sentence> sentences = new List<Sentence>();
+        Map map;
+        List<Zone> zones = new List<Zone>();
+        Player player;
+        public Game Load(int username, int characterID)
         {
-            List<Item> itemsBase = new List<Item>();
-            List<Item> items = new List<Item>();
-            List<NPC> npcBase = new List<NPC>();
-            List<NPC> npc = new List<NPC>();
-            List<Dialogue> dialogues = new List<Dialogue>();
-            List<Sentence> sentences = new List<Sentence>();
-            Map map;
-            List<Zone> zones = new List<Zone>();
-            Player player;
-
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
                 conn.Open();
@@ -30,6 +29,8 @@ namespace Elaborato
                 SqlDataReader reader = command.ExecuteReader();
                 reader.Read();
                 map = new Map(reader[1].ToString());
+                map.PlayerPos = (int)reader[2];
+                map.ID = (int)reader[0];
                 reader.Close();
 
                 //Scarico le zone e le inserisco in map
@@ -368,10 +369,124 @@ namespace Elaborato
                 return new Game(itemsBase, npcBase, map, player);
             }
         }
-        public static void Save(int username, int characterID)
+        public void Save(Game game, int username, int characterID)
         {
+            using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
+            {
+                conn.Open();
 
+                //Inserisco il player
+                SqlCommand command = new SqlCommand($"UPDATE Player SET Helmet = @Helmet WHERE ID = {characterID}");
+                if (game.Player.Helmet is null)
+                    command.Parameters.AddWithValue("@Helmet", null);
+                else
+                    command.Parameters.AddWithValue("@Helmet", game.Player.Helmet.ID);
+
+                command = new SqlCommand($"UPDATE Player SET Chestplate = @Chestplate WHERE ID = {characterID}");
+                if (game.Player.Chestplate is null)
+                    command.Parameters.AddWithValue("@Chestplate", null);
+                else
+                    command.Parameters.AddWithValue("@Chestplate", game.Player.Chestplate.ID);
+
+                command = new SqlCommand($"UPDATE Player SET Leggins = @Leggins WHERE ID = {characterID}");
+                if (game.Player.Leggins is null)
+                    command.Parameters.AddWithValue("@Leggins", null);
+                else
+                    command.Parameters.AddWithValue("@Leggins", game.Player.Leggins.ID);
+
+                command = new SqlCommand($"UPDATE Player SET Boots = @Boots WHERE ID = {characterID}");
+                if (game.Player.Boots is null)
+                    command.Parameters.AddWithValue("@Boots", null);
+                else
+                    command.Parameters.AddWithValue("@Boots", game.Player.Boots.ID);
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Weapon = @Weapon WHERE ID = {characterID}");
+                if (game.Player.Weapon is null)
+                    command.Parameters.AddWithValue("@Weapon", null);
+                else
+                    command.Parameters.AddWithValue("@Weapon", game.Player.Weapon.ID);
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Level = {game.Player.Level} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Exp = {game.Player.Exp} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Money = {game.Player.Money} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET HP = {game.Player.Stats.HP} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET MaxHP = {game.Player.Stats.MaxHP} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Mana = {game.Player.Stats.Mana} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET MaxMana = {game.Player.Stats.MaxMana} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Attack = {game.Player.Stats.Attack} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET AttackSpeed = {game.Player.Stats.AttackSpeed} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Elusiveness = {game.Player.Stats.Elusiveness} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET Intelligence = {game.Player.Stats.Intelligence} WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+
+                command = new SqlCommand($"DELETE FROM PlayerItem WHERE ID = {characterID}");
+                command.ExecuteNonQuery();
+
+                for(int i=0;i<game.Player.Items.Count;i++)
+                {
+                    if (game.Player.Items[i].Item.GetType() == typeof(Spell))
+                        continue;
+                    command = new SqlCommand($"INSERT INTO PlayerItem VALUES({characterID},{game.Player.Items[i].Item.ID},{game.Player.Items[i].Quantity})");
+                    command.ExecuteNonQuery();
+                }
+
+                for (int i = 0; i < game.Player.Items.Count; i++)
+                {
+                    if (game.Player.Items[i].Item.GetType() == typeof(Spell))
+                    {
+                        command = new SqlCommand($"INSERT INTO PlayerSpell VALUES({characterID},{game.Player.Items[i].Item.ID})");
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                //Update Map
+                command = new SqlCommand($"UPDATE Map SET PlayerPos = {game.Map.PlayerPos} WHERE ID = {game.Map.ID}");
+                command.ExecuteNonQuery();
+
+                //Update Zones
+                foreach(Zone z in game.Map.Zones)
+                {
+                    command = new SqlCommand($"DELETE FROM ItemInstantiation WHERE Zone = {z.ID}");
+                    command.ExecuteNonQuery();
+
+                    foreach (Item item in z.Items)
+                    {
+                        command = new SqlCommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({item.Position.X},{item.Position.X},{item.Position.Scale},{item.ID},{characterID},{z.ID})");
+                        command.ExecuteNonQuery();
+                    }
+
+                    foreach (NPC npc in z.Peoples)
+                    {
+                        command = new SqlCommand($"INSERT INTO ItemInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({npc.ID},{npc.Position.X},{npc.Position.X},{npc.Position.Scale},{npc.AlreadySpoken},{z.ID},{characterID})");
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }        
         }
+
 
         #region Codice Vecchio
         //static Item GetIDItem(int ID)

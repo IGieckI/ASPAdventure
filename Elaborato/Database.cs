@@ -90,21 +90,6 @@ namespace Elaborato
                 }
                 reader.Close();
 
-                //Scarico le istanze che utilizzerà
-                command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE Character = {characterID};", conn);
-                reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                    items.Add(itemsBase.Find(a=>a.ID==(int)reader[5]));
-                    items[items.Count() - 1].Position.X = (int)reader[1];
-                    items[items.Count() - 1].Position.Y = (int)reader[2];
-                    items[items.Count() - 1].Position.Scale = (int)reader[3];
-                    items[items.Count() - 1].Player = (int)reader[6];
-                    items[items.Count() - 1].Enemy = (int)reader[7];
-                    items[items.Count() - 1]. = (int)reader[1];
-                }
-                reader.Close();
-
                 //Imposto le proprietà nei consumables
                 command = new SqlCommand($"SELECT * FROM Consumables;", conn);
                 reader = command.ExecuteReader();
@@ -324,19 +309,52 @@ namespace Elaborato
                 reader.Close();
 
                 //Scarico i dati specifici degli npc locali e li aggiungo alla mappa
-                command = new SqlCommand($"SELECT * FROM NpcInstantiation;", conn);
+                command = new SqlCommand($"SELECT * FROM NpcInstantiation WHERE PlayerID = {characterID};", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    map.Zones[(int)reader[6]].Peoples.Add(npcBase.Find(a => a.ID == (int)reader[1]));
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples.Add(npcBase.Find(a => a.ID == (int)reader[1]));
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].AlreadySpoken = (int)reader[5] == 0 ? false : true;
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Dialogue = dialogues.Find(a => a.DialogueID == map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].DialogueID);
+                }
+                reader.Close();
 
+                command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE Player = {characterID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Items.Add(itemsBase.Find(b => b.ID == (int)reader[4]));
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Items[map.Zones.Find(a => a.ID == (int)reader[6]).Items.Count - 1].Position.X = (int)reader[1];
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Items[map.Zones.Find(a => a.ID == (int)reader[6]).Items.Count - 1].Position.Y = (int)reader[2];
+                    map.Zones.Find(a => a.ID == (int)reader[6]).Items[map.Zones.Find(a => a.ID == (int)reader[6]).Items.Count - 1].Position.Scale = (int)reader[3];
+                }
+                reader.Close();
 
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].AlreadySpoken = (int)reader[5] == 0 ? false : true;
-                    map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Dialogue = dialogues.Find(a => a.DialogueID == map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].DialogueID);
+                command = new SqlCommand($"SELECT * FROM DealerInstantiation WHERE PlayerID = {characterID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples.Add(npcBase.Find(a => a.ID == (int)reader[1]));
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
+                }
+                reader.Close();
+
+                command = new SqlCommand($"SELECT * FROM EnemyNPCInstantiation WHERE PlayerID = {characterID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples.Add(npcBase.Find(a => a.ID == (int)reader[1]));
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.Y = int.Parse(reader[3].ToString());
+                    map.Zones.Find(a => a.ID == (int)reader[5]).Peoples[map.Zones[(int)reader[5]].Peoples.Count() - 1].Position.Scale = int.Parse(reader[4].ToString());
                 }
                 reader.Close();
 
@@ -346,10 +364,6 @@ namespace Elaborato
                 reader.Read();
                 player = new Player(int.Parse(reader[0].ToString()), reader[2].ToString(), (Wearable)itemsBase.Find(a=>a.ID== int.Parse(reader[3].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString())), (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[6].ToString())), (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString())), int.Parse(reader[8].ToString()), int.Parse(reader[9].ToString()), int.Parse(reader[10].ToString()), int.Parse(reader[11].ToString()), int.Parse(reader[12].ToString()), int.Parse(reader[13].ToString()), int.Parse(reader[14].ToString()), int.Parse(reader[15].ToString()), int.Parse(reader[16].ToString()), int.Parse(reader[17].ToString()), int.Parse(reader[18].ToString()));
                 reader.Close();
-
-
-                //GESTISCI LE INSTANCES
-
 
                 return new Game(itemsBase, npcBase, map, player);
             }

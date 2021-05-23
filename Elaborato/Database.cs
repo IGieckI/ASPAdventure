@@ -476,12 +476,43 @@ namespace Elaborato
                     {
                         command = new SqlCommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({item.Position.X},{item.Position.X},{item.Position.Scale},{item.ID},{characterID},{z.ID})");
                         command.ExecuteNonQuery();
+
+                        if (item.GetType() == typeof(Portal))
+                        {
+                            command = new SqlCommand($"SELECT * FROM ItemInstantiation WHERE ;", conn);
+                    }
+                        else if (item.GetType() == typeof(Consumables))
+                        {
+
+                        }
+                        else if (item.GetType() == typeof(Wearable))
+                        {
+
+                        }
+                        else if (item.GetType() == typeof(Spell))
+                        {
+
+                        }
+                        if (item.GetType() == typeof(Weapon))
+                        {
+
+                        }
+                        if (item.GetType() == typeof(CurrencyItem))
+                        {
+
+                        }
+                        if (item.GetType() == typeof(Container))
+                        {
+
+                        }
                     }
 
                     foreach (NPC npc in z.Peoples)
                     {
                         command = new SqlCommand($"INSERT INTO ItemInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({npc.ID},{npc.Position.X},{npc.Position.X},{npc.Position.Scale},{npc.AlreadySpoken},{z.ID},{characterID})");
                         command.ExecuteNonQuery();
+
+
                     }
                 }
             }        

@@ -24,6 +24,7 @@ namespace EnemyAI
 
         public static void CreateModel()
         {
+            Console.WriteLine("Creazione modello...");
             // Indico il file da cui prendere i fati con tutte le specifiche sull'input
             IDataView trainingDataView = mlContext.Data.LoadFromTextFile<Input>(
                                             path: (Directory.GetCurrentDirectory()+"\\Data\\Data.txt"),
@@ -41,9 +42,11 @@ namespace EnemyAI
 
             IEstimator<ITransformer> trainingPipeline = dataProcessPipeline.Append(trainer);
 
+            Console.WriteLine("Training del modello...");
             // Traino il modello con i dati passati nel trainingDataView
             ITransformer mlModel = trainingPipeline.Fit(trainingDataView);
 
+            Console.WriteLine("Esportazione del modello...");
             //Salva il modello sotto forma di zip
             mlContext.Model.Save(mlModel, trainingDataView.Schema, (Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip"));
             string str = Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip";
@@ -51,12 +54,11 @@ namespace EnemyAI
 
         static void Main(string[] args)
         {
-            Console.WriteLine(Directory.GetCurrentDirectory());
 
             //Creo un nuovo modello
             CreateModel();
 
-
+            Console.WriteLine("\nTest dati:");
             Input dati = new Input()
             {
                 Col0 = 26F,
@@ -90,7 +92,28 @@ namespace EnemyAI
             Console.WriteLine($"HasHpPotion: {dati.Col10}");
             Console.WriteLine($"EnemyMagicHealCost: {dati.Col11}");
             Console.WriteLine($"EnemyMagicDamageCost: {dati.Col12}");
-            Console.WriteLine($"\n\nAzione Nemica: {risultato.Score}\n\n");
+            Console.Write($"\n\nAzione Nemica: {risultato.Score} ");
+
+            switch(Math.Round(risultato.Score))
+            {
+                case 0:
+                    Console.Write("(Attacco Normale)");
+                    break;
+                case 1:
+                    Console.Write("(Attacco Magico)");
+                    break;
+                case 2:
+                    Console.Write("(Cura)");
+                    break;
+                case 3:
+                    Console.Write("(Pozione HP)");
+                    break;
+                case 4:
+                    Console.Write("(Pozione Mana)");
+                    break;
+            }
+
+            Console.ReadKey();
         }
     }
 }

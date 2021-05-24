@@ -491,7 +491,7 @@ namespace Elaborato
             }        
         }
 
-        public static int GetPlayerIndex(SqlConnection conn,string tabella)
+        public static int GetLastIndex(SqlConnection conn,string tabella)
         {
             conn.InfoMessage += Conn_InfoMessage;
             SqlCommand command = new SqlCommand($"DBCC CHECKIDENT('{tabella}', NORESEED)", conn);
@@ -539,75 +539,75 @@ namespace Elaborato
                 }
         }
 
-        public void NewCHaracter(string username, string name, string description)
+        public void NewCharacter(string username, string name, string description)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
                 //Aggiungo il nuovo character
-                Sqlcommand command = new Sqlcommand("INSERT INTO Player(Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence) VALUES(SELECT Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence FROM Player WHERE ID = 0;);", conn);
+                SqlCommand command = new SqlCommand("INSERT INTO Player(Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence) VALUES(SELECT Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence FROM Player WHERE ID = 0;);", conn);
                 command.ExecuteNonQuery();
-                int lastIndex = GetPlayerIndex(conn);
-                command = new Sqlcommand($"UPDATE Player SET Username = {username} WHERE ID = {lastIndex};",conn);
+                int lastIndex = GetLastIndex(conn,"Player");
+                command = new SqlCommand($"UPDATE Player SET Username = {username} WHERE ID = {lastIndex};",conn);
                 command.ExecuteNonQuery();
-                command = new Sqlcommand($"UPDATE Player SET Name = {name} WHERE ID = {lastIndex};", conn);
+                command = new SqlCommand($"UPDATE Player SET Name = {name} WHERE ID = {lastIndex};", conn);
                 command.ExecuteNonQuery();
-                command = new Sqlcommand($"UPDATE Player SET Description = {description} WHERE ID = {lastIndex};", conn);
+                command = new SqlCommand($"UPDATE Player SET Description = {description} WHERE ID = {lastIndex};", conn);
                 command.ExecuteNonQuery();
                 //Immetto gli item nell'inventario del player(inizio game)
-                command = new Sqlcommand("SELECT * FROM PlayerItem WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM PlayerItem WHERE WHERE Player = 0;", conn);
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO PlayerItem VALUES({lastIndex},{(int)reader[1]},{(int)reader[2]});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO PlayerItem VALUES({lastIndex},{(int)reader[1]},{(int)reader[2]});", conn);
                     command2.ExecuteNonQuery();
                 }
 
                 //Immetto gli oggetti nelle stanze
-                command = new Sqlcommand("SELECT * FROM ItemInstantiation WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM ItemInstantiation WHERE WHERE Player = 0;", conn);
+                reader = command.ExecuteReader();
                 while(reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{lastIndex},{(int)reader[6]});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{lastIndex},{(int)reader[6]});", conn);
                     command2.ExecuteNonQuery();
                 }
 
-                command = new Sqlcommand("SELECT * FROM ContainerIstance WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM ContainerIstance WHERE WHERE Player = 0;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO ContainerIstance(AlreadyOpen,ItemIstID,Player) VALUES({reader[1]},{(int)reader[2]},{lastIndex});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO ContainerIstance(AlreadyOpen,ItemIstID,Player) VALUES({reader[1]},{(int)reader[2]},{lastIndex});", conn);
                     command2.ExecuteNonQuery();
                 }
 
                 //Immetto gli npc nelle stanze
-                command = new Sqlcommand("SELECT * FROM NpcInstantiation WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM NpcInstantiation WHERE WHERE Player = 0;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO NpcInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{reader[5]},{(int)reader[6]},{lastIndex});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO NpcInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{reader[5]},{(int)reader[6]},{lastIndex});", conn);
                     command2.ExecuteNonQuery();
                 }
                                 
-                command = new Sqlcommand("SELECT * FROM EnemyNPCInstantiation WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM EnemyNPCInstantiation WHERE WHERE Player = 0;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO EnemyNPCInstantiation(Enemy,PositionX,PositionY,Scale,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{(int)reader[5]},{lastIndex});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO EnemyNPCInstantiation(Enemy,PositionX,PositionY,Scale,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{(int)reader[5]},{lastIndex});", conn);
                     command2.ExecuteNonQuery();
                 }
 
-                command = new Sqlcommand("SELECT * FROM DealerInstantiation WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM DealerInstantiation WHERE WHERE Player = 0;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Sqlcommand command2 = new Sqlcommand($"INSERT INTO DealerInstantiation(NPCID,PositionX,PositionY,Scale,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{(int)reader[5]},{lastIndex});", conn);
+                    SqlCommand command2 = new SqlCommand($"INSERT INTO DealerInstantiation(NPCID,PositionX,PositionY,Scale,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{(int)reader[5]},{lastIndex});", conn);
                     command2.ExecuteNonQuery();
 
-                    command2 = new Sqlcommand($"SELECT * FROM DealerInventory WHERE WHERE Player = 0 AND DealerID = {(int)reader[1]};", conn);
+                    command2 = new SqlCommand($"SELECT * FROM DealerInventory WHERE WHERE Player = 0 AND DealerID = {(int)reader[1]};", conn);
                     SqlDataReader reader2 = command.ExecuteReader();
                     while (reader2.Read())
                     {
-                        Sqlcommand command3 = new Sqlcommand($"INSERT INTO DealerInventory(DealerID,ID,Amount) VALUES({lastIndex(conn,"DealerInventory")},{(int)reader[1]},{(int)reader[2]});", conn);
+                        SqlCommand command3 = new SqlCommand($"INSERT INTO DealerInventory(DealerID,ID,Amount) VALUES({GetLastIndex(conn,"DealerInventory")},{(int)reader[1]},{(int)reader[2]});", conn);
                         command3.ExecuteNonQuery();
                     }
                 }

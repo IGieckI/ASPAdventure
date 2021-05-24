@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elaborato", "Elaborato\Elaborato.csproj", "{CF03304C-FA39-4435-88BD-5DDE09F2E769}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratoreIATrainingData", "GeneratoreIATrainingData\GeneratoreIATrainingData.csproj", "{144AF1FB-5E62-4205-8008-656AC7986C48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemyIA", "EnemyIA\EnemyIA.csproj", "{DA838A82-6C6C-431F-B166-1BF7724CD7CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{CF03304C-FA39-4435-88BD-5DDE09F2E769}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF03304C-FA39-4435-88BD-5DDE09F2E769}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF03304C-FA39-4435-88BD-5DDE09F2E769}.Release|Any CPU.Build.0 = Release|Any CPU
+		{144AF1FB-5E62-4205-8008-656AC7986C48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{144AF1FB-5E62-4205-8008-656AC7986C48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{144AF1FB-5E62-4205-8008-656AC7986C48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{144AF1FB-5E62-4205-8008-656AC7986C48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA838A82-6C6C-431F-B166-1BF7724CD7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA838A82-6C6C-431F-B166-1BF7724CD7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA838A82-6C6C-431F-B166-1BF7724CD7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA838A82-6C6C-431F-B166-1BF7724CD7CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

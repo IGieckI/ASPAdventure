@@ -1265,8 +1265,8 @@ namespace Elaborato
         {
             /*XMLManager xMLManager = new XMLManager(Server);
             Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));*/
-
-            Game = Database.Load(username, CharacterID);
+            Database database = new Database();
+            Game = database.Load(username, CharacterID);
 
             
             /*Tests

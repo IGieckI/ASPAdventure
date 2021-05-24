@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Le informazioni generali relative a un assembly sono controllate dal seguente 
 // set di attributi. Modificare i valori di questi attributi per modificare le informazioni
 // associate a un assembly.
-[assembly: AssemblyTitle("EnemyIA")]
+[assembly: AssemblyTitle("GeneratoreIATrainingDataV2")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("EnemyIA")]
+[assembly: AssemblyProduct("GeneratoreIATrainingDataV2")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Se il progetto viene esposto a COM, il GUID seguente verrà utilizzato come ID della libreria dei tipi
-[assembly: Guid("da838a82-6c6c-431f-b166-1bf7724cd7cf")]
+[assembly: Guid("4f606bf7-0a40-4917-9fd7-98a60de89ef3")]
 
 // Le informazioni sulla versione di un assembly sono costituite dai seguenti quattro valori:
 //

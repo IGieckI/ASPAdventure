@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EnemyIA
+namespace EnemyAI
 {
-    class Program
+    class Output
     {
-        static void Main(string[] args)
-        {
-        }
+        public float Score { get; set; }
     }
 }

@@ -5,25 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneratoreIATrainingData"
         mc:Ignorable="d"
-        Title="MainWindow" Height="193" Width="539" Loaded="Window_Loaded">
+        Title="MainWindow" Height="213" Width="539" Loaded="Window_Loaded" ResizeMode="CanMinimize">
     <Grid>
         <Button x:Name="btnAttacco" Content="Attacco" HorizontalAlignment="Left" VerticalAlignment="Top" Height="58" Width="174" Click="btnAttacco_Click"/>
-        <Button x:Name="btnMagiaAttacco" Content="Magia Attacco" HorizontalAlignment="Left" Margin="0,55,0,0" VerticalAlignment="Top" Height="58" Width="174" Click="btnMagiaAttacco_Click"/>
-        <Button x:Name="btnMagiaCura" Content="Magia Cura" HorizontalAlignment="Left" Margin="0,113,0,0" VerticalAlignment="Top" Height="58" Width="174" Click="btnMagiaCura_Click"/>
-        <Label Content="Hp" HorizontalAlignment="Left" Margin="179,20,0,0" VerticalAlignment="Top" Width="86"/>
-        <Label Content="Mana" HorizontalAlignment="Left" Margin="177,51,0,0" VerticalAlignment="Top" Width="88"/>
+        <Button x:Name="btnMagiaAttacco" Content="Attacco Magico(5 mana)" HorizontalAlignment="Left" Margin="0,58,0,0" VerticalAlignment="Top" Height="58" Width="174" Click="btnMagiaAttacco_Click"/>
+        <Button x:Name="btnMagiaCura" Content="Cura(5 mana)" HorizontalAlignment="Left" Margin="0,116,0,0" VerticalAlignment="Top" Height="58" Width="174" Click="btnMagiaCura_Click"/>
+        <Label Content="Hp" HorizontalAlignment="Left" Margin="179,28,0,0" VerticalAlignment="Top" Width="86"/>
+        <Label Content="Mana" HorizontalAlignment="Left" Margin="177,54,0,0" VerticalAlignment="Top" Width="88"/>
         <Label Content="Attack" HorizontalAlignment="Left" Margin="177,82,0,0" VerticalAlignment="Top" Width="88"/>
-        <Label Content="Intelligence" HorizontalAlignment="Left" Margin="179,113,0,0" VerticalAlignment="Top" Width="86"/>
+        <Label Content="Intelligence" HorizontalAlignment="Left" Margin="177,108,0,0" VerticalAlignment="Top" Width="86"/>
         <Label Content="Nemico" HorizontalAlignment="Left" Margin="393,3,0,0" VerticalAlignment="Top" Width="128" HorizontalContentAlignment="Center"/>
         <Label Content="Player" HorizontalAlignment="Left" Margin="265,2,0,0" VerticalAlignment="Top" Width="128" HorizontalContentAlignment="Center"/>
-        <TextBox x:Name="txtPlayerHp" HorizontalAlignment="Left" Margin="265,30,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtPlayerMana" HorizontalAlignment="Left" Margin="265,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtPlayerAttack" HorizontalAlignment="Left" Margin="265,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="120"/>
-        <TextBox x:Name="txtPlayerIntelligence" HorizontalAlignment="Left" Margin="265,121,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtEnemyHp" HorizontalAlignment="Left" Margin="401,29,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtEnemyMana" HorizontalAlignment="Left" Margin="401,55,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtEnemyAttack" HorizontalAlignment="Left" Margin="401,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="120"/>
-        <TextBox x:Name="txtEnemyIntelligence" HorizontalAlignment="Left" Margin="401,121,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtPlayerHp" HorizontalAlignment="Left" Margin="265,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtPlayerMana" HorizontalAlignment="Left" Margin="265,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtPlayerAttack" HorizontalAlignment="Left" Margin="265,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtPlayerIntelligence" HorizontalAlignment="Left" Margin="265,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtEnemyHp" HorizontalAlignment="Left" Margin="401,33,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtEnemyMana" HorizontalAlignment="Left" Margin="401,58,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtEnemyAttack" HorizontalAlignment="Left" Margin="401,86,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtEnemyIntelligence" HorizontalAlignment="Left" Margin="401,113,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
 
     </Grid>
 </Window>

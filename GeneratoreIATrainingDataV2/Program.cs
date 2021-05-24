@@ -20,7 +20,7 @@ namespace GeneratoreIATrainingDataV2
         static int EnemyMagicDamageCost;
         static void Main(string[] args)
         {
-            int qDati = 100000;
+            int qDati = 1000000;
 
             for (int i = 0; i < qDati; i++)
             {
@@ -80,7 +80,7 @@ namespace GeneratoreIATrainingDataV2
         /// <param name="output"></param>
         static void WriteData(int output)
         {
-            using (StreamWriter sw = new StreamWriter("Data2.txt",true))
+            using (StreamWriter sw = new StreamWriter("Data.txt",true))
             {
                 sw.WriteLine(PlayerHp + "," + PlayerMana + "," + PlayerAttack + "," + PlayerIntelligence + "," + PlayerMagicCost + "," + EnemyHp + "," + EnemyMana + "," + EnemyAttack + "," + EnemyIntelligence + "," + HasManaPotion + "," + HasHpPotion + "," + EnemyMagicHealCost + "," + EnemyMagicDamageCost + "," + output);
             }

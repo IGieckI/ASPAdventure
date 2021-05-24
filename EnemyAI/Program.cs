@@ -45,7 +45,8 @@ namespace EnemyAI
             ITransformer mlModel = trainingPipeline.Fit(trainingDataView);
 
             //Salva il modello sotto forma di zip
-            mlContext.Model.Save(mlModel, trainingDataView.Schema, (Directory.GetCurrentDirectory() + "\\Data\\Modello.zip"));
+            mlContext.Model.Save(mlModel, trainingDataView.Schema, (Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip"));
+            string str = Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip";
         }
 
         static void Main(string[] args)
@@ -76,21 +77,20 @@ namespace EnemyAI
             //Testo il modello 
             var risultato = PredictionEngine.Value.Predict(dati);
 
-            Console.WriteLine("Using model to make single prediction -- Comparing actual Col13 with predicted Col13 from sample data...\n\n");
-            Console.WriteLine($"Col0: {dati.Col0}");
-            Console.WriteLine($"Col1: {dati.Col1}");
-            Console.WriteLine($"Col2: {dati.Col2}");
-            Console.WriteLine($"Col3: {dati.Col3}");
-            Console.WriteLine($"Col4: {dati.Col4}");
-            Console.WriteLine($"Col5: {dati.Col5}");
-            Console.WriteLine($"Col6: {dati.Col6}");
-            Console.WriteLine($"Col7: {dati.Col7}");
-            Console.WriteLine($"Col8: {dati.Col8}");
-            Console.WriteLine($"Col9: {dati.Col9}");
-            Console.WriteLine($"Col10: {dati.Col10}");
-            Console.WriteLine($"Col11: {dati.Col11}");
-            Console.WriteLine($"Col12: {dati.Col12}");
-            Console.WriteLine($"\n\nPredicted Col13: {risultato.Score}\n\n");
+            Console.WriteLine($"PlayerHp: {dati.Col0}");
+            Console.WriteLine($"PlayerMana: {dati.Col1}");
+            Console.WriteLine($"PlayerAttack: {dati.Col2}");
+            Console.WriteLine($"PlayerIntelligence: {dati.Col3}");
+            Console.WriteLine($"PlayerMagicCost: {dati.Col4}");
+            Console.WriteLine($"EnemyHp: {dati.Col5}");
+            Console.WriteLine($"EnemyMana: {dati.Col6}");
+            Console.WriteLine($"EnemyAttack: {dati.Col7}");
+            Console.WriteLine($"EnemyIntelligence: {dati.Col8}");
+            Console.WriteLine($"HasManaPotion: {dati.Col9}");
+            Console.WriteLine($"HasHpPotion: {dati.Col10}");
+            Console.WriteLine($"EnemyMagicHealCost: {dati.Col11}");
+            Console.WriteLine($"EnemyMagicDamageCost: {dati.Col12}");
+            Console.WriteLine($"\n\nAzione Nemica: {risultato.Score}\n\n");
         }
     }
 }

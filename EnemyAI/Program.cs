@@ -1,4 +1,4 @@
-﻿using Microsoft.ML;
+using Microsoft.ML;
 using Microsoft.ML.Trainers.LightGbm;
 using System;
 using System.IO;
@@ -48,8 +48,43 @@ namespace EnemyAI
 
             Console.WriteLine("Esportazione del modello...");
             //Salva il modello sotto forma di zip
-            mlContext.Model.Save(mlModel, trainingDataView.Schema, (Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip"));
-            string str = Directory.GetCurrentDirectory() + "\\.\\.\\Data\\Modello.zip";
+            mlContext.Model.Save(mlModel, trainingDataView.Schema, (Directory.GetCurrentDirectory() + "\\Data\\Modello.zip"));
+            string str = Directory.GetCurrentDirectory() + "\\Data\\Modello.zip";
+        }
+
+        public static void TestModel()
+        {
+            int nTest=0;
+            int nSuccess = 0;
+            using(StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\Data\\Test.txt"))
+            {
+                while(!sr.EndOfStream)
+                {
+                    string[] input = sr.ReadLine().ToString().Split(',');
+                    Input dati = new Input()
+                    {
+                        Col0 = float.Parse(input[0]),
+                        Col1 = float.Parse(input[1]),
+                        Col2 = float.Parse(input[2]),
+                        Col3 = float.Parse(input[3]),
+                        Col4 = float.Parse(input[4]),
+                        Col5 = float.Parse(input[5]),
+                        Col6 = float.Parse(input[6]),
+                        Col7 = float.Parse(input[7]),
+                        Col8 = float.Parse(input[8]),
+                        Col9 = float.Parse(input[9]),
+                        Col10 = float.Parse(input[10]),
+                        Col11 = float.Parse(input[11]),
+                        Col12 = float.Parse(input[12])
+                    };
+
+                    var result = PredictionEngine.Value.Predict(dati);
+                    nTest++;
+                    if (Math.Round(result.Score,0) == float.Parse(input[13]))
+                        nSuccess++;
+                    Console.WriteLine($"Percentuale di accuratezza: {100*nSuccess/nTest}%");
+                }                
+            }
         }
 
         static void Main(string[] args)
@@ -58,6 +93,9 @@ namespace EnemyAI
             //Creo un nuovo modello
             CreateModel();
 
+            //Testo il modello 
+            //TestModel();
+            
             Console.WriteLine("\nTest dati:");
             Input dati = new Input()
             {
@@ -75,8 +113,6 @@ namespace EnemyAI
                 Col11 = 6F,
                 Col12 = 3F,
             };
-
-            //Testo il modello 
             var risultato = PredictionEngine.Value.Predict(dati);
 
             Console.WriteLine($"PlayerHp: {dati.Col0}");
@@ -112,7 +148,6 @@ namespace EnemyAI
                     Console.Write("(Pozione Mana)");
                     break;
             }
-
             Console.ReadKey();
         }
     }

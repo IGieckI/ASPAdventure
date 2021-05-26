@@ -20,7 +20,7 @@ namespace GeneratoreIATrainingDataV2
         static int EnemyMagicDamageCost;
         static void Main(string[] args)
         {
-            int qDati = 1000000;
+            int qDati = 10000;
 
             for (int i = 0; i < qDati; i++)
             {

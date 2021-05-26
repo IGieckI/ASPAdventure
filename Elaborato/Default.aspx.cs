@@ -1263,10 +1263,12 @@ namespace Elaborato
         //Usefull Methods
         private void LoadTest()
         {
-            /*XMLManager xMLManager = new XMLManager(Server);
-            Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));*/
-            Database database = new Database();
-            Game = database.Load(username, CharacterID);
+            XMLManager xMLManager = new XMLManager(Server);
+            Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));
+
+
+            //Database database = new Database();
+            //Game = database.Load(username, CharacterID);
 
             
             /*Tests

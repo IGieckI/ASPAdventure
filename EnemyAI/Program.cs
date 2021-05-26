@@ -56,7 +56,7 @@ namespace EnemyAI
         {
             int nTest=0;
             int nSuccess = 0;
-            using(StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\Data\\Test.txt"))
+            using(StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + "\\Data\\Data.txt"))
             {
                 while(!sr.EndOfStream)
                 {
@@ -94,7 +94,7 @@ namespace EnemyAI
             CreateModel();
 
             //Testo il modello 
-            //TestModel();
+            TestModel();
             
             Console.WriteLine("\nTest dati:");
             Input dati = new Input()

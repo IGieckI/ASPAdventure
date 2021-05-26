@@ -49,9 +49,9 @@ namespace Elaborato
                 }
                 cnn.Open();
 
-                string s = Session["username"].ToString();
+                string s = Session["Username"].ToString();
 
-                SqlCommand command = new SqlCommand($"SELECT * FROM Player WHERE Username = '{Session["username"]}';", cnn);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Player WHERE Username = '{Session["Username"]}';", cnn);
 
                 SqlDataReader reader = command.ExecuteReader();
 
@@ -79,7 +79,7 @@ namespace Elaborato
 
         protected void grdCharacters_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
         {
-            Session["characterID"] = Characters[e.NewSelectedIndex].ID;
+            Session["PlayerID"] = Characters[e.NewSelectedIndex].ID;
             Response.Redirect("~/Default.aspx");
         }
     }

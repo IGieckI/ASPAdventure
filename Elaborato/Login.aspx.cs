@@ -51,7 +51,7 @@ namespace Elaborato
                     if (username.Text == OutPutSelectAll[0].ToString() && password.Text == OutPutSelectAll[1].ToString())
                     {
                         OutPutSelectAll.Close();
-                        Session["username"]= username.Text;
+                        Session["Username"] = username.Text;
                         Response.Redirect("~/UserHomePage.aspx");
                     }
 

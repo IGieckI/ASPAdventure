@@ -15,29 +15,29 @@ namespace Elaborato
     public partial class Default : System.Web.UI.Page
     {
 
-        int username
+        string Username
         {
             get
             {
-                return (int)Session["username"];
+                return Session["Username"].ToString();
             }
 
             set
             {
-                Session["username"] = value;
+                Session["Username"] = value;
             }
         }
 
-        int CharacterID
+        int PlayerID
         {
             get
             {
-                return (int)Session["characterID"];
+                return (int)Session["PlayerID"];
             }
 
             set
             {
-                Session["characterID"] = value;
+                Session["PlayerID"] = value;
             }
         }
 
@@ -1263,12 +1263,12 @@ namespace Elaborato
         //Usefull Methods
         private void LoadTest()
         {
-            XMLManager xMLManager = new XMLManager(Server);
-            Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));
+            //XMLManager xMLManager = new XMLManager(Server);
+            //Game = xMLManager.Decode(System.Web.HttpContext.Current.Server.MapPath("~/Game.xml"));
 
 
-            //Database database = new Database();
-            //Game = database.Load(username, CharacterID);
+            Database database = new Database();
+            Game = database.Load(Username, PlayerID);
 
             
             /*Tests

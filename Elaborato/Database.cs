@@ -107,7 +107,7 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).RemoveAfeterUnlock = (bool)reader[1];
+                    ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).RemoveAfterUnlock = (bool)reader[1];
                 }
                 reader.Close();
 

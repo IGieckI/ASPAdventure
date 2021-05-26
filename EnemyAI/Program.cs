@@ -38,7 +38,7 @@ namespace EnemyAI
             var dataProcessPipeline = mlContext.Transforms.Concatenate("Features", new[] { "col0", "col1", "col2", "col3", "col4", "col5", "col6", "col7", "col8", "col9", "col10", "col11", "col12" });
 
             // Definisco l'algoritmo che andrò ad utilizzare
-            var trainer = mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options() { NumberOfIterations = 200, LearningRate = 0.2030963f, NumberOfLeaves = 7, MinimumExampleCountPerLeaf = 1, UseCategoricalSplit = true, HandleMissingValue = false, UseZeroAsMissingValue = true, MinimumExampleCountPerGroup = 100, MaximumCategoricalSplitPointCount = 8, CategoricalSmoothing = 10, L2CategoricalRegularization = 10, Booster = new GradientBooster.Options() { L2Regularization = 1, L1Regularization = 1 }, LabelColumnName = "col13", FeatureColumnName = "Features" });
+            var trainer = mlContext.Regression.Trainers.LightGbm(new LightGbmRegressionTrainer.Options() { /*NumberOfIterations = 200, LearningRate = 0.2030963f, NumberOfLeaves = 7, MinimumExampleCountPerLeaf = 1, UseCategoricalSplit = true, HandleMissingValue = false, UseZeroAsMissingValue = true, MinimumExampleCountPerGroup = 100, MaximumCategoricalSplitPointCount = 8, CategoricalSmoothing = 10, L2CategoricalRegularization = 10, Booster = new GradientBooster.Options() { L2Regularization = 1, L1Regularization = 1 },*/ Booster = new DartBooster.Options(){TreeDropFraction = 0.15,XgboostDartMode = false}, LabelColumnName = "col13", FeatureColumnName = "Features" });
 
             IEstimator<ITransformer> trainingPipeline = dataProcessPipeline.Append(trainer);
 

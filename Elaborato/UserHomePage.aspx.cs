@@ -51,7 +51,7 @@ namespace Elaborato
 
                 string s = Session["username"].ToString();
 
-                SqlCommand command = new SqlCommand("SELECT * FROM Character WHERE Username = " + Session["username"], cnn);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Player WHERE Username = '{Session["username"]}';", cnn);
 
                 SqlDataReader reader = command.ExecuteReader();
 

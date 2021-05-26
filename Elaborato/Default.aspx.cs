@@ -964,7 +964,7 @@ namespace Elaborato
                     {
                         if (Game.Player.Items.Find(y => y.Item.Name == x.Item.Name) is null)
                         {
-                            txtDescription.Text = "Non hai gli oggetti necessari per accedere!";
+                            txtDescription.Text = "Non hai gli oggetti necessari!";
                             OnItemDescriptionDisplay = true;
                             return;
                         }
@@ -995,13 +995,13 @@ namespace Elaborato
                     {
                         if (Game.Player.Items.Find(y => y.Item.Name == x.Item.Name) is null)
                         {
-                            txtDescription.Text = "Non hai gli oggetti necessari per accedere!";
+                            txtDescription.Text = "Non hai gli oggetti necessari!";
                             OnItemDescriptionDisplay = true;
                             return;
                         }
                     }
 
-                    if (((Container)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).RemoveAfeterUnlock)
+                    if (((Container)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).RemoveAfterUnlock)
                     {
                         foreach (ItemTuple o in ((Container)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).ItemRequest)
                             for (int k = 0; k < Game.Player.Items.Count; k++)

@@ -934,6 +934,7 @@ namespace Elaborato
         protected void ItemClick(object sender, ImageClickEventArgs e)
         {
             ClientID = ((ImageButton)sender).ID;
+
             for (int i = 0; i < Game.Map.Zones[Game.Map.PlayerPos].Items.Count; i++)
             {
                 if (Game.Map.Zones[Game.Map.PlayerPos].Items[i].Name == ClientID)
@@ -978,7 +979,7 @@ namespace Elaborato
                                     LeftItem(o.Item.Name);
                             }
                     }
-                    Game.Map.PlayerPos = ((Portal)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).ZonePointer;
+                    Game.Map.PlayerPos = Game.Map.Zones.FindIndex(a=> a.ID==((Portal)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).ZonePointer);
                     break;
                 }
             }

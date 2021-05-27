@@ -1,7 +1,5 @@
 ﻿@import url('https://fonts.googleapis.com/css?family=Poppins');
 
-/* BASIC */
-
 html {
     background-color: #56baed;
 }
@@ -99,6 +97,6 @@ input[type=text]:placeholder {
     color: #cccccc;
 }
 
-* {
+*{
     box-sizing: border-box;
 }

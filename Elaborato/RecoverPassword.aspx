@@ -11,11 +11,13 @@
 <body>
     <form id="form1" runat="server">
         <div>
-                <asp:Label ID="lblMsg" runat="server" Text="Inserisci la nuova password"></asp:Label>
+                <asp:Label ID="lblMsg" runat="server" Text="Inserisci la nuova password" style="position:absolute; left:42%; top:10%; width:300px;"></asp:Label>
                 <br />
-                <asp:TextBox ID="txtPassword" runat="server" name="login" type="password" placeholder="Password"></asp:TextBox>
-                <asp:TextBox ID="txtPassword2" runat="server" name="login" type="password" placeholder="Password"></asp:TextBox>
-                <asp:Button ID="btnConferma" type="submit" runat="server" Text="Conferma" OnClick="btnConferma_Click"/>
+                <asp:TextBox ID="txtPassword" runat="server" name="login" type="password" placeholder="Password" style="position:absolute; left:40%; top:15%; width:300px;"></asp:TextBox>
+            <br />
+                <asp:TextBox ID="txtPassword2" runat="server" name="login" type="password" placeholder="Repete Password" style="position:absolute; left:40%; top:25%; width:300px;"></asp:TextBox>
+            <br />
+                <asp:Button ID="btnConferma" type="submit" runat="server" Text="Conferma" OnClick="btnConferma_Click" style="position:absolute; left:42%; top:35%;" />
         </div>
     </form>
 </body>

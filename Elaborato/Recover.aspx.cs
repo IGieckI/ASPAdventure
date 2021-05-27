@@ -42,6 +42,7 @@ namespace Elaborato
                 {
                     Session["OTP"] = SendMail(reader["Email"].ToString());
                     lblMsg.Text = "Inserisci il codice OTP";
+                    txtEmail.Text = "";
                     return;
                 }
                 lblErrore.Text = "Email inserita non corretta";

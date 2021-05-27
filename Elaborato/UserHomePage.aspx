@@ -39,7 +39,7 @@
                         </asp:GridView>
             <asp:Label ID="lblErrore" runat="server" Text="" ForeColor="#CC3300"></asp:Label>
         </div>
-        <asp:Button ID="btnExit" type="submit"  runat="server" Text="Esci" style="position:absolute; top:20px; left: 1700px;" OnClick="btnExit_Click" />
+        <asp:Button ID="btnExit" type="submit"  runat="server" Text="Esci" style="position:absolute; top:20px; left: 1600px;" OnClick="btnExit_Click" />
     </form>
 </body>
 </html>

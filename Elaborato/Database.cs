@@ -454,7 +454,7 @@ namespace Elaborato
                 player.Weapon = (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[7].ToString()));
 
             if (reader["PlayerPos"] == DBNull.Value)
-                map.PlayerPos = 1;
+                map.PlayerPos = 0;
             else
                 map.PlayerPos = (int)reader["PlayerPos"];
             reader.Close();

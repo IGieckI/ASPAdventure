@@ -297,24 +297,52 @@ namespace Elaborato
                 reader.Close();
 
                 //Inserisco i dati nei dealer
+                command = new SqlCommand($"SELECT * FROM DealerInstantiation WHERE PlayerID = {playerID};", conn);
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    ((Dealer)npcBase.Find(a => a.ID == (int)reader[1])).Url = reader[0].ToString();
+                }
+                reader.Close();
+
                 command = new SqlCommand($"SELECT * FROM DealerInventory;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    ((Dealer)npcBase.Find(a => a.ID == (int)reader[0])).Shop.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                    ((Dealer)npcBase.Find(a => a.Url == reader[0].ToString())).Shop.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
                 }
-                reader.Close();
+              reader.Close();
 
                 //Imposto i dati degli enemy
                 command = new SqlCommand($"SELECT * FROM Enemy;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Helmet = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[1].ToString()));
-                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Chestplate = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[2].ToString()));
-                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Leggins = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString()));
-                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Boots = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString()));
-                    ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Weapon = (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString()));
+                    if(reader[1] == DBNull.Value)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Helmet = null;
+                    else
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Helmet = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[1].ToString()));
+
+                    if (reader[2] == DBNull.Value)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Chestplate = null;
+                    else
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Chestplate = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[2].ToString()));
+
+                    if (reader[3] == DBNull.Value)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Leggins = null;
+                    else
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Leggins = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[3].ToString()));
+
+                    if (reader[4] == DBNull.Value)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Boots = null;
+                    else
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Boots = (Wearable)itemsBase.Find(a => a.ID == int.Parse(reader[4].ToString()));
+
+                    if (reader[5] == DBNull.Value)
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Weapon = null;
+                    else
+                        ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Weapon = (Weapon)itemsBase.Find(a => a.ID == int.Parse(reader[5].ToString()));
+
                     ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Experience = (int)reader[6];
                     ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).EscapePerc = (int)reader[7];
                     ((EnemyKeyNPC)npcBase.Find(a => a.ID == (int)reader[0])).Money = (int)reader[8];
@@ -351,6 +379,8 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    if (map.Zones.Find(a => a.ID == (int)reader[6]).Peoples is null)
+                        map.Zones.Find(a => a.ID == (int)reader[6]).Peoples = new List<NPC>();
                     map.Zones.Find(a => a.ID == (int)reader[6]).Peoples.Add(npcBase.Find(a => a.ID == (int)reader[1]));
                     map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].ID = int.Parse(reader[0].ToString());
                     map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Position.X = int.Parse(reader[2].ToString());

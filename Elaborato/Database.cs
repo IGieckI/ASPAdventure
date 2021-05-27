@@ -21,12 +21,22 @@ namespace Elaborato
         Player player;
         public Game Load(string username, int playerID)
         {
-            using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
+            SqlConnection conn;
+
+            conn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
+            try
             {
                 conn.Open();
+                conn.Close();
+            }
+            catch
+            {
+                conn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
+            }
+            conn.Open();
 
-                SqlCommand command;
-                SqlDataReader reader;
+            SqlCommand command;
+            SqlDataReader reader;
 
                 //Istanzio Map
                 //command = new SqlCommand($"SELECT * FROM Map WHERE ID = {playerID};", conn);
@@ -118,6 +128,9 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    if(((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemDrop is null)
+                        ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemDrop = new List<ItemTuple>();
+
                     ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemDrop.Add(new ItemTuple(itemsBase.Find(b=>b.ID==(int)reader[1]),(int)reader[2]));
                 }
                 reader.Close();
@@ -126,6 +139,9 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    if (((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest is null)
+                        ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest = new List<ItemTuple>();
+
                     ((Container)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
                 }
                 reader.Close();
@@ -155,7 +171,10 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
+                    if (((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest is null)
+                        ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest = new List<ItemTuple>();
+
+                        ((Portal)itemsBase.Find(a => a.ID == (int)reader[0])).ItemRequest.Add(new ItemTuple(itemsBase.Find(b => b.ID == (int)reader[1]), (int)reader[2]));
                 }
                 reader.Close();
 
@@ -172,10 +191,11 @@ namespace Elaborato
                 reader.Close();
 
                 //Imposto le proprietà nei Wearable
-                command = new SqlCommand($"SELECT * FROM Weapon;", conn);
+                command = new SqlCommand($"SELECT * FROM Wearables;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                     string str = reader[0].ToString();
                     ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).Armor = (int)reader[1];
                     ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).MagicResist = (int)reader[2];
                     ((Wearable)itemsBase.Find(a => a.ID == (int)reader[0])).ManaRegen = (int)reader[3];
@@ -212,10 +232,7 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    for (int i = 0; i < dialogues.Count(); i++)
-                    {
-                        sentences.Add(new Sentence(int.Parse(reader[0].ToString()), int.Parse(reader[1].ToString()), reader[2].ToString()));
-                    }
+                     sentences.Add(new Sentence(int.Parse(reader[0].ToString()), int.Parse(reader[1].ToString()), reader[2].ToString()));
                 }
                 reader.Close();
 
@@ -224,15 +241,20 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                     if (sentences.Find(a => a.ID == int.Parse(reader[0].ToString())).ItemGive is null)
+                         sentences.Find(a => a.ID == int.Parse(reader[0].ToString())).ItemGive = new List<ItemTuple>();
+
                     sentences.Find(a => a.ID == int.Parse(reader[0].ToString())).ItemGive.Add(new ItemTuple(itemsBase.Find(b => b.ID == int.Parse(reader[1].ToString())), (int)reader[2]));
                 }
                 reader.Close();
 
                 //Scarico e inserisco le answers
-                command = new SqlCommand($"SELECT * FROM Answer WHERE ;", conn);
+                command = new SqlCommand($"SELECT * FROM Answer;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    if (sentences.Find(a => a.ID == (int)reader[3]).Answers is null)
+                        sentences.Find(a => a.ID == (int)reader[3]).Answers = new List<KeyValuePair<int, string>>();
                     sentences.Find(a => a.ID == (int)reader[3]).Answers.Add(new KeyValuePair<int, string>((int)reader[2], reader[1].ToString()));
                 }
                 reader.Close();
@@ -240,6 +262,8 @@ namespace Elaborato
                 //Inserisco le sentences nei dialogues
                 for (int i = 0; i < sentences.Count(); i++)
                 {
+                    if (dialogues.Find(a => a.DialogueID == sentences[i].DialogueID).Spiching is null)
+                        dialogues.Find(a => a.DialogueID == sentences[i].DialogueID).Spiching = new List<Sentence>();
                     dialogues.Find(a => a.DialogueID == sentences[i].DialogueID).Spiching.Add(sentences[i]);
                 }
 
@@ -248,17 +272,26 @@ namespace Elaborato
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    if (reader["NpcType"] == DBNull.Value)
+                    {
                     if (reader[4] == DBNull.Value)
-                    {
+                        npcBase.Add(new NPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), -1));
+                    else
                         npcBase.Add(new NPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
-                    }
-                    else if (int.Parse(reader[4].ToString()) == 0)
+                }
+                    else if (int.Parse(reader["NpcType"].ToString()) == 0)
                     {
+                    if (reader[4] == DBNull.Value)
+                        npcBase.Add(new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), -1));
+                    else
                         npcBase.Add(new EnemyKeyNPC(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
-                    }
-                    else if (int.Parse(reader[4].ToString()) == 0)
+                }
+                    else if (int.Parse(reader["NpcType"].ToString()) == 1)
                     {
-                        npcBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
+                        if(reader[4] == DBNull.Value)
+                            npcBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), -1));
+                        else
+                            npcBase.Add(new Dealer(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), int.Parse(reader[4].ToString())));
                     }
                 }
                 reader.Close();
@@ -371,7 +404,6 @@ namespace Elaborato
                 reader.Close();
 
                 return new Game(itemsBase, npcBase, map, player);
-            }
         }
         public void Save(Game game, int username, int playerID)
         {
@@ -617,7 +649,6 @@ namespace Elaborato
             }
         }
 
-
         #region Codice Vecchio
         //static Item GetIDItem(int ID)
         //{
@@ -792,5 +823,5 @@ namespace Elaborato
         //    }
         //}
         #endregion
-    }
+}
 }

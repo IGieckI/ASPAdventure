@@ -11,7 +11,7 @@ namespace Elaborato
 {
 
 
-    public partial class Recover
+    public partial class RegisterOk
     {
 
         /// <summary>
@@ -24,39 +24,30 @@ namespace Elaborato
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
 
         /// <summary>
-        /// Controllo lblMsg.
+        /// Controllo icon.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMsg;
+        protected global::System.Web.UI.WebControls.Image icon;
 
         /// <summary>
-        /// Controllo txtEmail.
+        /// Controllo lblResponse.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+        protected global::System.Web.UI.WebControls.Label lblResponse;
 
         /// <summary>
-        /// Controllo lblErrore.
+        /// Controllo btnOk.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErrore;
-
-        /// <summary>
-        /// Controllo btnConferma.
-        /// </summary>
-        /// <remarks>
-        /// Campo generato automaticamente.
-        /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnConferma;
+        protected global::System.Web.UI.WebControls.Button btnOk;
     }
 }

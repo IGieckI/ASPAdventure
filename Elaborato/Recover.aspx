@@ -12,8 +12,10 @@
     <form id="form1" runat="server">
         <div>
             <div id="formContent">
-                <h2>Inserisci la tua email</h2>
-                <input type="text" id="email" name="login">
+                <br />
+                <asp:Label ID="lblMsg" runat="server" Text="Inserisci la tua mail"></asp:Label>
+                <asp:TextBox ID="txtEmail" runat="server" type="text" name="login"></asp:TextBox>
+                <asp:Label ID="lblErrore" runat="server" Text=""></asp:Label>
                 <asp:Button ID="btnConferma" type="submit" runat="server" Text="Conferma" OnClick="btnConferma_Click"/>
             </div>
         </div>

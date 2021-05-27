@@ -19,7 +19,6 @@ namespace Elaborato
         {
             try
             {
-                string connectionString;
                 SqlConnection cnn;
 
                 cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
@@ -34,24 +33,42 @@ namespace Elaborato
                 }
 
                 cnn.Open();
-                if (!email.Text.Contains('@'))
-                {
-                    lblErrore.Text = "Inserisci una mail valida!";
-                    lblErrore.Visible = false;
-                }
 
-                SqlCommand command = new SqlCommand(@"INSERT INTO Users VALUES(@username,@mail,@password)", cnn);
+                if (!email.Text.Contains('@'))
+                    throw new Exception("Inserisci una mail valida!");
+
+                if (EmailExist(email.Text, cnn))
+                    throw new Exception("Questa mail è già stata usata");
+
+                if(password.Text != confermaPassword.Text)
+                    throw new Exception("Le due password non corrispondono!");
+
+                SqlCommand command = new SqlCommand(@"INSERT INTO Users VALUES(@username,@password,@mail,0)", cnn);
                 command.Parameters.AddWithValue("@username", username.Text);
                 command.Parameters.AddWithValue("@mail", email.Text);
                 command.Parameters.AddWithValue("@password", password.Text);
                 command.ExecuteNonQuery();
                 cnn.Close();
+
+                Response.Redirect("~/Response.aspx");
             }
             catch (Exception ex)
             {
                 lblErrore.Text = ex.Message;
                 lblErrore.Visible = true;
             }
+        }
+
+        private bool EmailExist(string email, SqlConnection cnn)
+        {
+            SqlCommand command = new SqlCommand($"SELECT * FROM Users WHERE Email = '{email}';",cnn);
+            command.Parameters.AddWithValue("@mail", email);
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                    return true;
+                return false;
+            }                
         }
     }
 }

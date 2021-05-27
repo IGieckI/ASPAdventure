@@ -19,7 +19,6 @@ namespace Elaborato
         {
             try
             {
-                string connectionString;
                 SqlConnection cnn;
 
                 cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
@@ -32,12 +31,13 @@ namespace Elaborato
                 {
                     cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
                 }
+                cnn.Open();
 
                 SqlDataReader OutPutSelectAll;
                 SqlCommand command;
                 String sql;
                 SqlDataAdapter adapter = new SqlDataAdapter();
-                cnn.Open();
+
                 if (username.Text.Contains('@'))
                     sql = "SELECT Email,Password FROM dbo.Users";
                 else

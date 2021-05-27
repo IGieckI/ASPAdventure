@@ -51,6 +51,15 @@ namespace Elaborato
         protected global::System.Web.UI.WebControls.TextBox password;
 
         /// <summary>
+        /// Controllo confermaPassword.
+        /// </summary>
+        /// <remarks>
+        /// Campo generato automaticamente.
+        /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox confermaPassword;
+
+        /// <summary>
         /// Controllo lblErrore.
         /// </summary>
         /// <remarks>

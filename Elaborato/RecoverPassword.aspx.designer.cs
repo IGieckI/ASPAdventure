@@ -11,7 +11,7 @@ namespace Elaborato
 {
 
 
-    public partial class Recover
+    public partial class RecoverPassword
     {
 
         /// <summary>
@@ -33,22 +33,22 @@ namespace Elaborato
         protected global::System.Web.UI.WebControls.Label lblMsg;
 
         /// <summary>
-        /// Controllo txtEmail.
+        /// Controllo txtPassword.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtEmail;
+        protected global::System.Web.UI.WebControls.TextBox txtPassword;
 
         /// <summary>
-        /// Controllo lblErrore.
+        /// Controllo txtPassword2.
         /// </summary>
         /// <remarks>
         /// Campo generato automaticamente.
         /// Per la modifica, spostare la dichiarazione di campo dal file di progettazione al file code-behind.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErrore;
+        protected global::System.Web.UI.WebControls.TextBox txtPassword2;
 
         /// <summary>
         /// Controllo btnConferma.

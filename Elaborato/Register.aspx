@@ -21,6 +21,8 @@
                     <asp:TextBox ID="email" runat="server" type="text" name="login" placeholder="Email"></asp:TextBox>
                     <h3>Password</h3>
                     <asp:TextBox ID="password" runat="server" type="password" name="login" placeholder="Password"></asp:TextBox>
+                    <h3>Conferma Password</h3>
+                    <asp:TextBox ID="confermaPassword" runat="server" type="password" name="login" placeholder="Conferma Password"></asp:TextBox>
                     <br />
                     <asp:Label ID="lblErrore" runat="server" Text="Dati inseriti non corretti!" ForeColor="#CC3300"></asp:Label>
                     <br />

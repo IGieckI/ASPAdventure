@@ -1304,11 +1304,11 @@ namespace Elaborato
             z2.StoryDescription = "ehehe, ed è così che incontrasti il baaaka(l'egirl)";
             z4.StoryDescription = "Idk, suppongo lui abbia qualcosa di interessante da venderti";
             z3.StoryDescription = "OWO Ecco una waifu!";
-            z0.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Sfondo1.png"));
-            z1.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Sfondo3.png"));
-            z2.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/iochemangio.gif"));
-            z3.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Sfondo2.png"));
-            z4.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Sfondo4.png"));
+            z0.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Sfondo1.png"));
+            z1.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Sfondo3.png"));
+            z2.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/iochemangio.gif"));
+            z3.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Sfondo2.png"));
+            z4.BackGround = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Sfondo4.png"));
             z0.Description = "Una foresta OWO";
             z1.Description = "Una foresta OWO, sfocata";
             z2.Description = "Un Ezze";
@@ -1316,8 +1316,8 @@ namespace Elaborato
             z4.Description = "Cosa ti aspettavi scusa?";
             z2.ItemNeeded.Add(new Item("Coin",true));
 
-            NPC Okarin = new NPC("Rintaro Okabe", "A MAD SCIENTIST!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Okarin2.png")), null, null);
-            Okarin.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Enemy2Dialogue.png"));
+            NPC Okarin = new NPC("Rintaro Okabe", "A MAD SCIENTIST!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Okarin2.png")), null, null);
+            Okarin.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Enemy2Dialogue.png"));
             Okarin.Position = new ElementPosition();
             Okarin.Position.X = 300;
             Okarin.Position.Y = 350;
@@ -1332,9 +1332,9 @@ namespace Elaborato
             Okarin.Dialogue.Spiching[2].Answers.Add(new KeyValuePair<int, string>(2, "Oook"));
             z1.Peoples.Add(Okarin);
 
-            EnemyKeyNPC Kurisu = new EnemyKeyNPC("Kurisu Makise", "Pff!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Kurisu.png")), null, null);
-            Kurisu.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Kurisu.png"));
-            Kurisu.FightSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Kurisu.png"));
+            EnemyKeyNPC Kurisu = new EnemyKeyNPC("Kurisu Makise", "Pff!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Kurisu.png")), null, null);
+            Kurisu.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Kurisu.png"));
+            Kurisu.FightSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Kurisu.png"));
             Kurisu.Position = new ElementPosition();
             Kurisu.Position.X = 500;
             Kurisu.Position.Y = 350;
@@ -1358,8 +1358,8 @@ namespace Elaborato
             z3.Peoples.Add(Kurisu);
 
             Dealer asdf = new Dealer(0, "adsf");
-            Dealer SuperHacker = new Dealer("Itaru Hasida", "Pff!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Hitaru.png")), null, null);
-            SuperHacker.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/Hitaru.png"));
+            Dealer SuperHacker = new Dealer("Itaru Hasida", "Pff!", System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Hitaru.png")), null, null);
+            SuperHacker.DialogueSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/Hitaru.png"));
             SuperHacker.Position = new ElementPosition();
             SuperHacker.Position.X = 200;
             SuperHacker.Position.Y = 350;
@@ -1370,7 +1370,7 @@ namespace Elaborato
             z4.Peoples.Add(SuperHacker);
 
             Item coin = new Item("Coin",false);
-            coin.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/coin.png"));
+            coin.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/coin.png"));
             coin.Position.X = 900;
             coin.Position.Y = 350;
             coin.Position.Scale = 600;
@@ -1378,7 +1378,7 @@ namespace Elaborato
 
             Portal p = new Portal(0,"Portale");
             p.ZonePointer = 5;
-            p.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/NetherPortal.png"));
+            p.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/NetherPortal.png"));
             z4.Items.Add(p);
             p.Position.X = 500;
             p.Position.Y = 350;
@@ -1387,7 +1387,7 @@ namespace Elaborato
 
             Portal p2 = new Portal(0, "Portale");
             p2.ZonePointer = 4;
-            p2.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/NetherPortal.png"));
+            p2.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/NetherPortal.png"));
             z5.Items.Add(p2);
             p2.Position.X = 500;
             p2.Position.Y = 350;
@@ -1395,7 +1395,7 @@ namespace Elaborato
             Game.Items.Add(p2);
 
             CurrencyItem sacco = new CurrencyItem(0,"sacchetto di monete");
-            sacco.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/sacchetto.png"));
+            sacco.ItemSprite = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/sacchetto.png"));
             sacco.Position.X = 2000;
             sacco.Position.Y = 350;
             sacco.Position.Scale = 100;
@@ -1697,9 +1697,9 @@ namespace Elaborato
                         btnRightArrow.Visible = true;
 
                         if (CheckLockedZone(Game.Map.Zones[zone.Est]))
-                            btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                            btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                         else
-                            btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/RightArrow.png")));
+                            btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/RightArrow.png")));
                     }
 
                     if (zone.West == zone.ID)
@@ -1709,9 +1709,9 @@ namespace Elaborato
                         btnLeftArrow.Visible = true;
 
                         if (CheckLockedZone(Game.Map.Zones[zone.West]))
-                            btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                            btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                         else
-                            btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/LeftArrow.png")));
+                            btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/LeftArrow.png")));
                     }
 
                     if (zone.North == zone.ID)
@@ -1721,9 +1721,9 @@ namespace Elaborato
                         btnUpArrow.Visible = true;
 
                         if (CheckLockedZone(Game.Map.Zones[zone.North]))
-                            btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                            btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                         else
-                            btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/UpArrow.png")));
+                            btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/UpArrow.png")));
                     }
 
                     if (zone.South == zone.ID)
@@ -1733,9 +1733,9 @@ namespace Elaborato
                         btnDownArrow.Visible = true;
 
                         if (CheckLockedZone(Game.Map.Zones[zone.South]))
-                            btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                            btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                         else
-                            btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/DownArrow.png")));
+                            btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/DownArrow.png")));
                     }
                 }
 
@@ -1924,9 +1924,9 @@ namespace Elaborato
                     btnRightArrow.Visible = true;
 
                     if (CheckLockedZone(Game.Map.Zones[zone.Est]))
-                        btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                        btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                     else
-                        btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/RightArrow.png")));
+                        btnRightArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/RightArrow.png")));
                 }
 
                 if (zone.West == zone.ID)
@@ -1936,9 +1936,9 @@ namespace Elaborato
                     btnLeftArrow.Visible = true;
 
                     if (CheckLockedZone(Game.Map.Zones[zone.West]))
-                        btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                        btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                     else
-                        btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/LeftArrow.png")));
+                        btnLeftArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/LeftArrow.png")));
                 }
 
                 if (zone.North == zone.ID)
@@ -1948,9 +1948,9 @@ namespace Elaborato
                     btnUpArrow.Visible = true;
 
                     if (CheckLockedZone(Game.Map.Zones[zone.North]))
-                        btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                        btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                     else
-                        btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/UpArrow.png")));
+                        btnUpArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/UpArrow.png")));
                 }
 
                 if (zone.South == zone.ID)
@@ -1960,9 +1960,9 @@ namespace Elaborato
                     btnDownArrow.Visible = true;
 
                     if (CheckLockedZone(Game.Map.Zones[zone.South]))
-                        btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/locket.png")));
+                        btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/locket.png")));
                     else
-                        btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Immagini/DownArrow.png")));
+                        btnDownArrow.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath(@"~/Images/DownArrow.png")));
                 }
             }
 
@@ -1977,13 +1977,13 @@ namespace Elaborato
             }
 
             //Load Minimap Image
-            if (zone.Minimap is null)
+            if (zone.Minimap is null || zone.Minimap == "")
             {
                 imageMinimap.ImageUrl = "data:image/jpeg;base64,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";
             }
             else
             {
-                imageMinimap.ImageUrl = "data:image/gif;base64," + Convert.ToBase64String(System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath($@"{zone.Minimap}")));
+                imageMinimap.ImageUrl = "data:image/gif;base64," + ImageToBase64(LocalFileToImage(Server.MapPath(zone.Minimap)));
             }
 
             //Set up for the Npcs and Items Load

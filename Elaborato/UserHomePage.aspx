@@ -17,7 +17,7 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            <img src="Immagini/GameTitle.png" id="icon" style="position:absolute; top: -100px; left: -20px;" />
+            <img src="Images/GameTitle.png" id="icon" style="position:absolute; top: -100px; left: -20px;" />
             <asp:GridView ID="grdCharacters" runat="server" AutoGenerateColumns="False" AutoGenerateSelectButton="True" style="position:absolute; top: 100px; left: 14px; width: 1340px;" CellPadding="4" ForeColor="#333333" GridLines="None" OnSelectedIndexChanging="grdCharacters_SelectedIndexChanging">
                 <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                 <Columns>

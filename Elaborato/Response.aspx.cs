@@ -16,7 +16,7 @@ namespace Elaborato
                 if (Session["Messaggio pagina conferma"].ToString() == "Qualcosa è andato storto")
                 {
                     lblResponse.Text = "Qualcosa è andato storto";
-                    icon.ImageUrl = "Immagini/Error.png";
+                    icon.ImageUrl = "Images/Error.png";
                 }
         }
 

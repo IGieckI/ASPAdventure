@@ -71,7 +71,7 @@ namespace Elaborato
             }
             cnn.Open();
 
-            SqlCommand command = new SqlCommand($"SELECT Username, Password FROM Users WHERE Email = {email};", cnn);
+            SqlCommand command = new SqlCommand($"SELECT Username, Password FROM Users WHERE Email = '{email}';", cnn);
             SqlDataReader reader = command.ExecuteReader();
             reader.Read();
             string username = reader[0].ToString();

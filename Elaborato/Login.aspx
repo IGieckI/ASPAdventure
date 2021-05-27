@@ -18,7 +18,7 @@
                     <h2 class="underlineHover"><a href="Register.aspx">Sign Up </a></h2>
 
                     <div class="fadeIn first">
-                        <img src="Immagini/GameIcon.png" id="icon" />
+                        <img src="Images/GameIcon.png" id="icon" />
                     </div>
 
                     <asp:TextBox ID="username" runat="server" type="text" class="fadeIn second" name="login" placeholder="Username"></asp:TextBox>

@@ -12,3 +12,5 @@
                     map.Zones.Find(a => a.ID == (int)reader[6]).Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].Dialogue = dialogues.Find(a => a.DialogueID == map.Zones[(int)reader[6]].Peoples[map.Zones[(int)reader[6]].Peoples.Count() - 1].DialogueID);
                 }
                 reader.Close();
+
+ImageToBase64(LocalFileToImage(Server.MapPath(zone.Minimap)));

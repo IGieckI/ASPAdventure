@@ -11,7 +11,6 @@ namespace Elaborato
     public class Database
     {
         List<Item> itemsBase = new List<Item>();
-        List<Item> items = new List<Item>();
         List<NPC> npcBase = new List<NPC>();
         List<NPC> npc = new List<NPC>();
         List<Dialogue> dialogues = new List<Dialogue>();
@@ -66,12 +65,11 @@ namespace Elaborato
                     string sprite = reader[2].ToString();
                     bool isKey = (bool)reader[3];
                     int sellValue = int.Parse(reader[4].ToString());
-
-                    string str = reader[5].ToString();
+                    string description = reader[6].ToString();
 
                     if (reader[5] == DBNull.Value)
                     {
-                        itemsBase.Add(new Item(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Item(id, name, sprite, isKey, sellValue, description));
                     }
                     else if ((int)reader[5] == 0)
                     {
@@ -80,19 +78,19 @@ namespace Elaborato
                     }
                     else if ((int)reader[5] == 1)
                     {
-                        itemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Consumables(id, name, sprite, isKey, sellValue, description));
                     }
                     else if ((int)reader[5] == 2)
                     {
-                        itemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Wearable(id, name, sprite, isKey, sellValue, description));
                     }
                     else if ((int)reader[5] == 3)
                     {
-                        itemsBase.Add(new Spell(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Spell(id, name, sprite, isKey, sellValue, description));
                     }
                     else if ((int)reader[5] == 4)
                     {
-                        itemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue));
+                        itemsBase.Add(new Weapon(id, name, sprite, isKey, sellValue, description));
                     }
                     else if ((int)reader[5] == 5)
                     {
@@ -459,91 +457,105 @@ namespace Elaborato
                 map.PlayerPos = (int)reader["PlayerPos"];
             reader.Close();
 
+            command = new SqlCommand($"SELECT * FROM PlayerItem WHERE Player = {playerID};", conn);
+            reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                player.Items.Add(new ItemTuple(itemsBase.Find(a=>a.ID==(int)reader[1]),(int)reader[2]));
+            }
+            reader.Close();
+
             return new Game(itemsBase, npcBase, map, player);
         }
 
 
-        public void Save(Game game, int username, int playerID)
+        public void Save(Game game, string username, int playerID)
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
                 conn.Open();
 
                 //Inserisco il player
-                SqlCommand command = new SqlCommand($"UPDATE Player SET Helmet = @Helmet WHERE ID = {playerID}");
+                SqlCommand command = new SqlCommand($"UPDATE Player SET Helmet = @Helmet WHERE ID = {playerID}", conn);
                 if (game.Player.Helmet is null)
-                    command.Parameters.AddWithValue("@Helmet", null);
+                    command.Parameters.AddWithValue("@Helmet", DBNull.Value);
                 else
                     command.Parameters.AddWithValue("@Helmet", game.Player.Helmet.ID);
+                command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Chestplate = @Chestplate WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Chestplate = @Chestplate WHERE ID = {playerID}", conn);
                 if (game.Player.Chestplate is null)
-                    command.Parameters.AddWithValue("@Chestplate", null);
+                    command.Parameters.AddWithValue("@Chestplate", DBNull.Value);
                 else
                     command.Parameters.AddWithValue("@Chestplate", game.Player.Chestplate.ID);
+                command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Leggins = @Leggins WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Leggins = @Leggins WHERE ID = {playerID}", conn);
                 if (game.Player.Leggins is null)
-                    command.Parameters.AddWithValue("@Leggins", null);
+                    command.Parameters.AddWithValue("@Leggins", DBNull.Value);
                 else
                     command.Parameters.AddWithValue("@Leggins", game.Player.Leggins.ID);
+                command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Boots = @Boots WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Boots = @Boots WHERE ID = {playerID}", conn);
                 if (game.Player.Boots is null)
-                    command.Parameters.AddWithValue("@Boots", null);
+                    command.Parameters.AddWithValue("@Boots", DBNull.Value);
                 else
                     command.Parameters.AddWithValue("@Boots", game.Player.Boots.ID);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Weapon = @Weapon WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Weapon = @Weapon WHERE ID = {playerID}", conn);
                 if (game.Player.Weapon is null)
-                    command.Parameters.AddWithValue("@Weapon", null);
+                    command.Parameters.AddWithValue("@Weapon", DBNull.Value);
                 else
                     command.Parameters.AddWithValue("@Weapon", game.Player.Weapon.ID);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Level = {game.Player.Level} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Level = {game.Player.Level} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Exp = {game.Player.Exp} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Exp = {game.Player.Exp} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Money = {game.Player.Money} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Money = {game.Player.Money} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET HP = {game.Player.Stats.HP} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET HP = {game.Player.Stats.HP} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET MaxHP = {game.Player.Stats.MaxHP} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET MaxHP = {game.Player.Stats.MaxHP} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Mana = {game.Player.Stats.Mana} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Mana = {game.Player.Stats.Mana} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET MaxMana = {game.Player.Stats.MaxMana} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET MaxMana = {game.Player.Stats.MaxMana} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Attack = {game.Player.Stats.Attack} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Attack = {game.Player.Stats.Attack} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET AttackSpeed = {game.Player.Stats.AttackSpeed} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET AttackSpeed = {game.Player.Stats.AttackSpeed} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Elusiveness = {game.Player.Stats.Elusiveness} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Elusiveness = {game.Player.Stats.Elusiveness} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
-                command = new SqlCommand($"UPDATE Player SET Intelligence = {game.Player.Stats.Intelligence} WHERE ID = {playerID}");
+                command = new SqlCommand($"UPDATE Player SET Intelligence = {game.Player.Stats.Intelligence} WHERE ID = {playerID}", conn);
+                command.ExecuteNonQuery();
+
+                command = new SqlCommand($"UPDATE Player SET PlayerPos = {game.Map.PlayerPos} WHERE ID = {playerID}", conn);
                 command.ExecuteNonQuery();
 
 
-                command = new SqlCommand($"DELETE FROM PlayerItem WHERE ID = {playerID}");
+                command = new SqlCommand($"DELETE FROM PlayerItem WHERE Player = {playerID}", conn);
                 command.ExecuteNonQuery();
 
                 for(int i=0;i<game.Player.Items.Count;i++)
                 {
                     if (game.Player.Items[i].Item.GetType() == typeof(Spell))
                         continue;
-                    command = new SqlCommand($"INSERT INTO PlayerItem VALUES({playerID},{game.Player.Items[i].Item.ID},{game.Player.Items[i].Quantity})");
+                    command = new SqlCommand($"INSERT INTO PlayerItem VALUES({playerID},{game.Player.Items[i].Item.ID},{game.Player.Items[i].Quantity})", conn);
                     command.ExecuteNonQuery();
                 }
 
@@ -551,33 +563,33 @@ namespace Elaborato
                 {
                     if (game.Player.Items[i].Item.GetType() == typeof(Spell))
                     {
-                        command = new SqlCommand($"INSERT INTO PlayerSpell VALUES({playerID},{game.Player.Items[i].Item.ID})");
+                        command = new SqlCommand($"INSERT INTO PlayerSpell VALUES({playerID},{game.Player.Items[i].Item.ID})", conn);
                         command.ExecuteNonQuery();
                     }
                 }
 
                 //Update Map
-                command = new SqlCommand($"UPDATE Map SET PlayerPos = {game.Map.PlayerPos} WHERE ID = {game.Map.ID}");
+                command = new SqlCommand($"UPDATE Map SET PlayerPos = {game.Map.PlayerPos} WHERE ID = {game.Map.ID}", conn);
                 command.ExecuteNonQuery();
 
                 //Update Zones
                 foreach(Zone z in game.Map.Zones)
                 {
-                    command = new SqlCommand($"DELETE FROM ItemInstantiation WHERE Zone = {z.ID}");
+                    command = new SqlCommand($"DELETE FROM ItemInstantiation WHERE Zone = {z.ID}", conn);
                     command.ExecuteNonQuery();
 
                     foreach (Item item in z.Items)
                     {
-                        command = new SqlCommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({item.Position.X},{item.Position.X},{item.Position.Scale},{item.ID},{playerID},{z.ID})");
+                        command = new SqlCommand($"INSERT INTO ItemInstantiation(PositionX,PositionY,Scale,Item,Player,Zone) VALUES({item.Position.X},{item.Position.Y},{item.Position.Scale},{item.ID},{playerID},{z.ID})", conn);
                         command.ExecuteNonQuery();                                              
                     }
 
-                    command = new SqlCommand($"DELETE FROM NpcInstantiation WHERE Zone = {z.ID}");
+                    command = new SqlCommand($"DELETE FROM NpcInstantiation WHERE Zone = {z.ID}",conn);
                     command.ExecuteNonQuery();
 
                     foreach (NPC npc in z.Peoples)
                     {
-                        command = new SqlCommand($"INSERT INTO ItemInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({npc.ID},{npc.Position.X},{npc.Position.X},{npc.Position.Scale},{npc.AlreadySpoken},{z.ID},{playerID})");
+                        command = new SqlCommand($"INSERT INTO NpcInstantiation(NPCID,PositionX,PositionY,Scale,AlreadySpoken,Zone,PlayerID) VALUES({npc.ID},{npc.Position.X},{npc.Position.Y},{npc.Position.Scale},{(npc.AlreadySpoken == true ? 1:0).ToString()},{z.ID},{playerID})", conn);
                         command.ExecuteNonQuery();
                     }
                 }
@@ -636,19 +648,26 @@ namespace Elaborato
         {
             using (SqlConnection conn = new SqlConnection("Data Source = (local); Initial Catalog = ASPAdventure; Integrated Security=True;"))
             {
+                conn.Open();
                 //Aggiungo il nuovo character
-                SqlCommand command = new SqlCommand("INSERT INTO Player(Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence) VALUES(SELECT Helmet,Chestplate,Leggins,Boots,Weapon,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence FROM Player WHERE ID = 0;);", conn);
+                SqlCommand command = new SqlCommand("SELECT * FROM Player WHERE ID = 1;", conn);
+                SqlDataReader reader = command.ExecuteReader();
+                reader.Read();
+                string str = reader[10].ToString();                
+                command = new SqlCommand($"INSERT INTO Player(Username,Name,Level,Exp,Money,Hp,MaxHp,Mana,MaxMana,Attack,AttackSpeed,Elusiveness,Intelligence,Description,PlayerPos) VALUES('{username}','{name}',{reader[8]},{reader[9]},{reader[10]},{reader[11]},{reader[12]},{reader[13]},{reader[14]},{reader[15]},{reader[16]},{reader[17]},{reader[18]},'{description}',0)", conn);
+                reader.Close();
                 command.ExecuteNonQuery();
                 int lastIndex = GetLastIndex(conn,"Player");
-                command = new SqlCommand($"UPDATE Player SET Username = {username} WHERE ID = {lastIndex};",conn);
-                command.ExecuteNonQuery();
-                command = new SqlCommand($"UPDATE Player SET Name = {name} WHERE ID = {lastIndex};", conn);
-                command.ExecuteNonQuery();
-                command = new SqlCommand($"UPDATE Player SET Description = {description} WHERE ID = {lastIndex};", conn);
-                command.ExecuteNonQuery();
+                //command = new SqlCommand($"UPDATE Player SET Username = {username} WHERE ID = {lastIndex};",conn);
+                //command.ExecuteNonQuery();
+                //command = new SqlCommand($"UPDATE Player SET Name = {name} WHERE ID = {lastIndex};", conn);
+                //command.ExecuteNonQuery();
+                //command = new SqlCommand($"UPDATE Player SET Description = {description} WHERE ID = {lastIndex};", conn);
+                //command.ExecuteNonQuery();
+
                 //Immetto gli item nell'inventario del player(inizio game)
-                command = new SqlCommand("SELECT * FROM PlayerItem WHERE WHERE Player = 0;", conn);
-                SqlDataReader reader = command.ExecuteReader();
+                command = new SqlCommand("SELECT * FROM PlayerItem WHERE Player = 1;", conn);
+                reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     SqlCommand command2 = new SqlCommand($"INSERT INTO PlayerItem VALUES({lastIndex},{(int)reader[1]},{(int)reader[2]});", conn);
@@ -656,7 +675,7 @@ namespace Elaborato
                 }
 
                 //Immetto gli oggetti nelle stanze
-                command = new SqlCommand("SELECT * FROM ItemInstantiation WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM ItemInstantiation WHERE WHERE Player = 1;", conn);
                 reader = command.ExecuteReader();
                 while(reader.Read())
                 {
@@ -664,7 +683,7 @@ namespace Elaborato
                     command2.ExecuteNonQuery();
                 }
 
-                command = new SqlCommand("SELECT * FROM ContainerIstance WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM ContainerIstance WHERE WHERE Player = 1;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -673,7 +692,7 @@ namespace Elaborato
                 }
 
                 //Immetto gli npc nelle stanze
-                command = new SqlCommand("SELECT * FROM NpcInstantiation WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM NpcInstantiation WHERE WHERE Player = 1;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -681,7 +700,7 @@ namespace Elaborato
                     command2.ExecuteNonQuery();
                 }
                                 
-                command = new SqlCommand("SELECT * FROM EnemyNPCInstantiation WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM EnemyNPCInstantiation WHERE WHERE Player = 1;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -689,14 +708,14 @@ namespace Elaborato
                     command2.ExecuteNonQuery();
                 }
 
-                command = new SqlCommand("SELECT * FROM DealerInstantiation WHERE WHERE Player = 0;", conn);
+                command = new SqlCommand("SELECT * FROM DealerInstantiation WHERE WHERE Player = 1;", conn);
                 reader = command.ExecuteReader();
                 while (reader.Read())
                 {
                     SqlCommand command2 = new SqlCommand($"INSERT INTO DealerInstantiation(NPCID,PositionX,PositionY,Scale,Zone,PlayerID) VALUES({(int)reader[1]},{(int)reader[2]},{(int)reader[3]},{(int)reader[4]},{(int)reader[5]},{lastIndex});", conn);
                     command2.ExecuteNonQuery();
 
-                    command2 = new SqlCommand($"SELECT * FROM DealerInventory WHERE WHERE Player = 0 AND DealerID = {(int)reader[1]};", conn);
+                    command2 = new SqlCommand($"SELECT * FROM DealerInventory WHERE WHERE Player = 1 AND DealerID = {(int)reader[1]};", conn);
                     SqlDataReader reader2 = command.ExecuteReader();
                     while (reader2.Read())
                     {

@@ -32,7 +32,30 @@ namespace Elaborato
             }
 
             lblErrore.Visible = false;
+            LoadGrid();
 
+        }
+
+        protected void btnExit_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+
+        protected void grdCharacters_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
+        {
+            Session["PlayerID"] = Characters[e.NewSelectedIndex].ID;
+            Response.Redirect("~/Default.aspx");
+        }
+
+        protected void btnNewCharacter_Click(object sender, EventArgs e)
+        {
+            Database database = new Database();
+            database.NewCharacter(Session["Username"].ToString(), name.Text, description.Text);
+            LoadGrid();
+        }
+
+        private void LoadGrid()
+        {
             try
             {
                 SqlConnection cnn;
@@ -70,17 +93,6 @@ namespace Elaborato
                 lblErrore.Text = ex.Message;
                 lblErrore.Visible = true;
             }
-        }
-
-        protected void btnExit_Click(object sender, EventArgs e)
-        {
-            Response.Redirect("~/Login.aspx");
-        }
-
-        protected void grdCharacters_SelectedIndexChanging(object sender, GridViewSelectEventArgs e)
-        {
-            Session["PlayerID"] = Characters[e.NewSelectedIndex].ID;
-            Response.Redirect("~/Default.aspx");
         }
     }
 }

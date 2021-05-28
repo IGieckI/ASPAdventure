@@ -12,7 +12,7 @@
     <form id="form1" runat="server">
         <div>
             <asp:Image ID="icon" runat="server" ImageUrl="Images/check.png" style="width:200px; left:43%; top:23%; position:absolute;" />
-            <asp:Label ID="lblResponse" runat="server" Text="Registrazione avvenuta con successo!" class="active" style="left:41%; top:50%; position:absolute;"></asp:Label>
+            <asp:Label ID="lblResponse" runat="server" Text="Operazione avvenuta con successo!" class="active" style="left:41%; top:50%; position:absolute;"></asp:Label>
             <asp:Button ID="btnOk" type="submit"  runat="server" Text="Torna al menù principale" style="left:38%; top:55%; position:absolute;" OnClick="btnExit_Click"/>
         </div>
     </form>

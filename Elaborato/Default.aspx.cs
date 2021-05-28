@@ -513,7 +513,7 @@ namespace AspAdventure
         protected void Page_PreRender(object sender, EventArgs e)
         {
             //if(FileChosen)
-              UpdateMap(Game.Map.Zones[Game.Map.PlayerPos]);
+            UpdateMap(Game.Map.Zones[Game.Map.PlayerPos]);
 
             if (OnEquip==1)
             {
@@ -542,7 +542,7 @@ namespace AspAdventure
         {
             if (CheckLockedZone(Game.Map.Zones[Game.Map.Zones[Game.Map.PlayerPos].Est]))
                 return;
-            Game.Map.Moving("right");
+            Game.Map.Moving("right");   
         }
         protected void btnDownArrow_Click(object sender, ImageClickEventArgs e)
         {
@@ -560,6 +560,8 @@ namespace AspAdventure
         //Action Button
         protected void btnSave_Click(object sender, EventArgs e)
         {
+            Database database= new Database();
+            database.Save(Game,Session["Username"].ToString(),(int)Session["PlayerID"]);
             /*XMLManager xMLManager = new XMLManager($"{Request.PhysicalApplicationPath}\\Game.xml", Server);
             xMLManager.Encode(Game);
 
@@ -572,9 +574,9 @@ namespace AspAdventure
         {
 
         }
-        protected void btnTalkTo_Click(object sender, EventArgs e)
+        protected void btnExit_Click(object sender, EventArgs e)
         {
-
+            Response.Redirect("~/UserHomePage.aspx");
         }
         protected void btnThrow_Click(object sender, EventArgs e)
         {
@@ -960,7 +962,7 @@ namespace AspAdventure
                                     LeftItem(o.Item.Name);
                             }
                     }
-                    Game.Map.PlayerPos = Game.Map.Zones.FindIndex(a=> a.ID == ((Portal)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).ZonePointer);
+                    Game.Map.PlayerPos = Game.Map.Zones.FindIndex(a=>a.ID==((Portal)Game.Map.Zones[Game.Map.PlayerPos].Items[i]).ZonePointer);
                     break;
                 }
             }
@@ -1081,10 +1083,9 @@ namespace AspAdventure
             string desc = Game.Player.Items[lstInventory.SelectedIndex].Item.Description;
             if (desc == "" || desc == null)
                 return;
-            if(Game.Player.Items[lstInventory.SelectedIndex].Item.IsKey)
-                txtDescription.Text = $"({Game.Player.Items[lstInventory.SelectedIndex].Item.SellValue}฿){Game.Player.Items[lstInventory.SelectedIndex].Item.Name}* \n\n" + desc;
-            else
-                txtDescription.Text = $"({Game.Player.Items[lstInventory.SelectedIndex].Item.SellValue}฿){Game.Player.Items[lstInventory.SelectedIndex].Item.Name} \n\n" + desc;
+
+            txtDescription.Text = $"({Game.Player.Items[lstInventory.SelectedIndex].Item.SellValue}฿){Game.Player.Items[lstInventory.SelectedIndex].Item.ToString().Split('|')[2]} \n\n" + desc;
+
             OnItemDescriptionDisplay = true;
         }
         protected void lstDialogue_SelectedIndexChanged(object sender, EventArgs e)
@@ -1426,9 +1427,7 @@ namespace AspAdventure
             lblZoneName.Text = zone.Name;
 
             //Update inventory list
-            if (Game.Player != null)
-                lstInventory.DataSource = Game.Player.Items;
-
+            lstInventory.DataSource = Game.Player.Items;
             lstInventory.DataBind();
 
             //Add zone description if the page is not refreshing for an item description
@@ -1986,7 +1985,7 @@ namespace AspAdventure
             if(OnDeal || OnDialogue)
             {
                 foreach (var x in Game.Map.Zones[Game.Map.PlayerPos].Peoples)
-                    if (x.Name == ClientID && !(x.DialogueSprite is null))
+                    if (x.Name == ClientID && !(x.OverWorldSprite is null))
                     {
                         string base64String = ImageToBase64(LocalFileToImage(Server.MapPath(x.OverWorldSprite)));
                         System.Web.UI.WebControls.Image imgDialogue = new System.Web.UI.WebControls.ImageButton();
@@ -2420,5 +2419,7 @@ namespace AspAdventure
 
             }*/
         #endregion Metodi test
+
+
     }
 }

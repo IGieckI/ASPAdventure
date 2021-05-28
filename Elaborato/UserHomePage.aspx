@@ -21,9 +21,9 @@
             <asp:GridView ID="grdCharacters" runat="server" AutoGenerateColumns="False" AutoGenerateSelectButton="True" style="position:absolute; top: 100px; left: 14px; width: 1340px;" CellPadding="4" ForeColor="#333333" GridLines="None" OnSelectedIndexChanging="grdCharacters_SelectedIndexChanging">
                 <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
                 <Columns>
-                    <asp:BoundField FooterText="Nome" HeaderText="Nome" DataField="Name" />
-                    <asp:BoundField FooterText="Livello" HeaderText="Livello" DataField="Level" />
-                    <asp:BoundField FooterText="Soldi" HeaderText="Soldi" DataField="Money" />
+                    <asp:BoundField FooterText="Name" HeaderText="Name" DataField="Name" />
+                    <asp:BoundField FooterText="Level" HeaderText="Level" DataField="Level" />
+                    <asp:BoundField FooterText="Money" HeaderText="Money" DataField="Money" />
                     <asp:BoundField FooterText="Descrizione" HeaderText="Description" DataField="Description" />
                 </Columns>
                         <EditRowStyle BackColor="#999999" />
@@ -38,8 +38,12 @@
                 <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
                         </asp:GridView>
             <asp:Label ID="lblErrore" runat="server" Text="" ForeColor="#CC3300"></asp:Label>
+
+            <!-- <asp:TextBox ID="name" runat="server" type="text" name="login" placeholder="Character Name" style="position:absolute; top:10%; left: 83%; width:280px;"></asp:TextBox>
+            <asp:TextBox ID="description" runat="server" type="text" name="login" placeholder="Description" style="position:absolute; top:15%; left: 83%; width:280px; height:120px;" TextMode="MultiLine"></asp:TextBox>
+            <asp:Button ID="btnNewCharacter" type="submit"  runat="server" Text="New Character" style="position:absolute; top:30%; left: 82%; width:280px;" OnClick="btnNewCharacter_Click"/> -->
         </div>
-        <asp:Button ID="btnExit" type="submit"  runat="server" Text="Esci" style="position:absolute; top:20px; left: 1600px;" OnClick="btnExit_Click" />
+        <asp:Button ID="btnExit" type="submit"  runat="server" Text="Esci" style="position:absolute; top:90%; left: 88%;" OnClick="btnExit_Click" />
     </form>
 </body>
 </html>

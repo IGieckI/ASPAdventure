@@ -36,6 +36,7 @@ namespace Elaborato
 
             if(Session["OTP"] is null)
             {
+                Session["mail"] = txtEmail.Text;
                 SqlCommand command = new SqlCommand($"SELECT * FROM Users WHERE Email = '{txtEmail.Text}';", cnn);
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
@@ -49,6 +50,7 @@ namespace Elaborato
             }
             else
             {
+
                 if(txtEmail.Text == Session["OTP"].ToString())
                     Response.Redirect("~/RecoverPassword.aspx");
             }
@@ -72,45 +74,16 @@ namespace Elaborato
             }
             cnn.Open();
 
-            SqlCommand command = new SqlCommand($"SELECT Username, Password FROM Users WHERE Email = '{email}';", cnn);
-            SqlDataReader reader = command.ExecuteReader();
-            reader.Read();
-            string username = reader[0].ToString();
-            string password = reader[1].ToString();
-
-            SmtpClient Client = new SmtpClient()
-            {
-                Host = "smtp.gmail.com",
-                Port = 587,
-                EnableSsl = true,
-                DeliveryMethod = SmtpDeliveryMethod.Network,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential()
-                {
-                    UserName = "aspadventurerecovery@gmail.com",
-                    Password = "aspadventure"
-                }
-            };
-
             Random rnd = new Random();
             int otp = rnd.Next(10000, 1000000);
-            MailAddress FromMail = new MailAddress("aspadventurerecovery@gmail.com", "ASP Adventure");
-            MailAddress ToMail = new MailAddress(email, "Someone");
-            MailMessage Message = new MailMessage()
-            {
-                From = FromMail,
-                Subject = "Recupero credenziali ASPAdventure",
-                Body = "Codice OTP: " + otp
-            };
-            Message.To.Add(ToMail);
 
             try
             {
-                Client.Send(Message);
+                Helper.SendMail(email, "Recupero credenziali ASPAdventure", $"Codice OTP: {otp}");
                 Session["Messaggio pagina conferma"] = "Mail inviata";
 
             }
-            catch (Exception ex)
+            catch
             {
                 Session["Messaggio pagina conferma"] = "Qualcosa è andato storto";
             }

@@ -46,10 +46,11 @@ namespace Elaborato
                 SqlCommand command = new SqlCommand(@"INSERT INTO Users VALUES(@username,@password,@mail,0)", cnn);
                 command.Parameters.AddWithValue("@username", username.Text);
                 command.Parameters.AddWithValue("@mail", email.Text);
-                command.Parameters.AddWithValue("@password", password.Text);
+                command.Parameters.AddWithValue("@password", Helper.HashPassword(password.Text));
                 command.ExecuteNonQuery();
                 cnn.Close();
 
+                Helper.SendMail(email.Text, "Registrazione ASPAdventure", $"Ciao {username.Text}, la tua registrazione ad ASPAdventure è avvenuta con successo, buon divertimento!");
                 Response.Redirect("~/Response.aspx");
             }
             catch (Exception ex)

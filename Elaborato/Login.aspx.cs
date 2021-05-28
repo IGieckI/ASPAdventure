@@ -33,30 +33,17 @@ namespace Elaborato
                 }
                 cnn.Open();
 
-                SqlDataReader OutPutSelectAll;
-                SqlCommand command;
-                String sql;
-                SqlDataAdapter adapter = new SqlDataAdapter();
-
-                if (username.Text.Contains('@'))
-                    sql = "SELECT Email,Password FROM dbo.Users";
-                else
-                    sql = "SELECT Username,Password FROM dbo.Users";
-                command = new SqlCommand(sql, cnn);
-                OutPutSelectAll = command.ExecuteReader();
-                bool found = false;
-
-                while (OutPutSelectAll.Read() && found == false)
+                if(Helper.Authenticate(username.Text,password.Text))
                 {
-                    if (username.Text == OutPutSelectAll[0].ToString() && password.Text == OutPutSelectAll[1].ToString())
-                    {
-                        OutPutSelectAll.Close();
-                        Session["Username"] = username.Text;
-                        Response.Redirect("~/UserHomePage.aspx");
-                    }
-
+                    SqlCommand command = new SqlCommand("SELECT * FROM Users WHERE Username = @Username OR Email = @Username", cnn);
+                    command.Parameters.AddWithValue("@Username", username.Text);
+                    SqlDataReader reader = command.ExecuteReader();
+                    reader.Read();
+                    Session["Username"] = reader[0].ToString();
+                    reader.Close();
+                    Response.Redirect("~/UserHomePage.aspx");
                 }
-                OutPutSelectAll.Close();
+
                 lblErrore.Text = "Dati inseriti non corretti!";
                 lblErrore.Visible = true;
             }

@@ -44,8 +44,8 @@
         <asp:UpdatePanel ID="PanelButtons" runat="server" Visible="true" style="width:100%; z-index:2; position:absolute;">
             <ContentTemplate>
                 <asp:Button ID="btnInspect" runat="server" Text="Inspect" style="position:absolute; top: 620px; left: -10px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnInspect_Click"/>
-                <asp:Button ID="btnTalkTo"  runat="server" Text="Talk To" style="position:absolute; top: 715px; left: -10px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnTalkTo_Click"/>
-                <asp:Button ID="btnEquip"   runat="server" Text="Equip"   style="position:absolute; top: 810px; left: -10px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnEquip_Click"/>
+                <asp:Button ID="btnExit"    runat="server" Text="Exit"    style="position:absolute; top: 810px; left: -10px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnExit_Click"/>
+                <asp:Button ID="btnEquip"   runat="server" Text="Equip"   style="position:absolute; top: 715px; left: -10px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnEquip_Click"/>
                 <asp:Button ID="btnUse"     runat="server" Text="Use"     style="position:absolute; top: 620px; left: 305px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnUse_Click"/>
                 <asp:Button ID="btnThrow"   runat="server" Text="Throw"   style="position:absolute; top: 715px; left: 305px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnThrow_Click"/>
                 <asp:Button ID="btnSave"    runat="server" Text="Save"    style="position:absolute; top: 810px; left: 305px; height: 95px; width: 315px;" Font-Size="40px" OnClick="btnSave_Click" />

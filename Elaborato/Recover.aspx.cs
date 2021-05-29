@@ -52,7 +52,10 @@ namespace Elaborato
             {
 
                 if(txtEmail.Text == Session["OTP"].ToString())
+                {
+                    Session["OTP"] = null;
                     Response.Redirect("~/RecoverPassword.aspx");
+                }
             }
             
             

@@ -31,7 +31,7 @@ namespace Elaborato
 
             SqlConnection cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
             cnn.Open();
-            SqlCommand command = new SqlCommand($"UPDATE Users SET Password = {Helper.HashPassword(txtPassword.Text)} WHERE Email = '{Session["mail"].ToString()}'", cnn);
+            SqlCommand command = new SqlCommand($"UPDATE Users SET Password = '{Helper.HashPassword(txtPassword.Text)}' WHERE Email = '{Session["mail"].ToString()}'", cnn);
             command.ExecuteNonQuery();
             cnn.Close();
 

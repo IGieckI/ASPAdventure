@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -36,6 +37,42 @@ namespace Elaborato
                 From = FromMail,
                 Subject = oggetto,
                 Body = contenuto
+            };
+            Message.To.Add(ToMail);
+            Client.Send(Message);
+        }
+
+        public static void SendRecoveryMail(string destinatario, string oggetto, int OTP,string path)
+        {
+            SmtpClient Client = new SmtpClient()
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential()
+                {
+                    UserName = "aspadventurerecovery@gmail.com",
+                    Password = "aspadventure"
+                }
+            };
+
+
+            string mail;
+            using (StreamReader sr = new StreamReader(path))
+            {
+                mail = sr.ReadToEnd();
+            }
+            mail = mail.Replace("VERIFICATION_CODE", OTP.ToString());
+            MailAddress FromMail = new MailAddress("aspadventurerecovery@gmail.com", "ASP Adventure");
+            MailAddress ToMail = new MailAddress(destinatario, "Someone");
+            MailMessage Message = new MailMessage()
+            {
+                From = FromMail,
+                Subject = oggetto,
+                Body = mail,
+                IsBodyHtml = true
             };
             Message.To.Add(ToMail);
             Client.Send(Message);

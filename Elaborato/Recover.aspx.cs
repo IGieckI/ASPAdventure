@@ -41,7 +41,9 @@ namespace Elaborato
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    Session["OTP"] = SendMail(reader["Email"].ToString());
+                    Random rnd = new Random();
+                    Session["OTP"] = rnd.Next(10000, 1000000);
+                    Helper.SendRecoveryMail(reader["Email"].ToString(), "Recupero credenziali ASPAdventure", (int)Session["OTP"], $"{Request.PhysicalApplicationPath}\\mail.html");
                     lblMsg.Text = "Inserisci il codice OTP";
                     txtEmail.Text = "";
                     return;
@@ -61,37 +63,37 @@ namespace Elaborato
             
         }
 
-        private int SendMail(string email)
-        {
-            SqlConnection cnn;
+        //private int SendMail(string email)
+        //{
+        //    SqlConnection cnn;
 
-            cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
-            try
-            {
-                cnn.Open();
-                cnn.Close();
-            }
-            catch
-            {
-                cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
-            }
-            cnn.Open();
+        //    cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure;User ID=sa;Password=burbero2020");
+        //    try
+        //    {
+        //        cnn.Open();
+        //        cnn.Close();
+        //    }
+        //    catch
+        //    {
+        //        cnn = new SqlConnection($"Data Source=(local);Initial Catalog=ASPAdventure; Integrated Security = True;");
+        //    }
+        //    cnn.Open();
 
-            Random rnd = new Random();
-            int otp = rnd.Next(10000, 1000000);
+        //    Random rnd = new Random();
+        //    int otp = rnd.Next(10000, 1000000);
 
-            try
-            {
-                Helper.SendMail(email, "Recupero credenziali ASPAdventure", $"Codice OTP: {otp}");
-                Session["Messaggio pagina conferma"] = "Mail inviata";
+        //    try
+        //    {
+        //        Helper.SendMail(email, "Recupero credenziali ASPAdventure", $"Codice OTP: {otp}");
+        //        Session["Messaggio pagina conferma"] = "Mail inviata";
 
-            }
-            catch
-            {
-                Session["Messaggio pagina conferma"] = "Qualcosa è andato storto";
-            }
+        //    }
+        //    catch
+        //    {
+        //        Session["Messaggio pagina conferma"] = "Qualcosa è andato storto";
+        //    }
 
-            return otp;
-        }
+        //    return otp;
+        //}
     }
 }

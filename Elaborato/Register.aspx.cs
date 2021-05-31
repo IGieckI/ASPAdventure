@@ -50,6 +50,9 @@ namespace Elaborato
                 command.ExecuteNonQuery();
                 cnn.Close();
 
+                Database database = new Database();
+                database.NewCharacter(username.Text, username.Text, "");
+
                 Helper.SendMail(email.Text, "Registrazione ASPAdventure", $"Ciao {username.Text}, la tua registrazione ad ASPAdventure è avvenuta con successo, buon divertimento!");
                 Response.Redirect("~/Response.aspx");
             }

@@ -37,7 +37,7 @@ namespace Elaborato
             if(Session["OTP"] is null)
             {
                 Session["mail"] = txtEmail.Text;
-                SqlCommand command = new SqlCommand($"SELECT * FROM Users WHERE Email = mail;", cnn);
+                SqlCommand command = new SqlCommand($"SELECT * FROM Users WHERE Email = @mail;", cnn);
                 command.Parameters.AddWithValue("@mail", txtEmail.Text);
                 SqlDataReader reader = command.ExecuteReader();
                 while (reader.Read())
